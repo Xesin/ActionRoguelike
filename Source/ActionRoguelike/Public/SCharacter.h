@@ -8,7 +8,7 @@
 
 class UCameraComponent;
 class USpringArmComponent;
-
+class ASMagicProjectile;
 UCLASS()
 class ACTIONROGUELIKE_API ASCharacter : public ACharacter
 {
@@ -25,11 +25,20 @@ protected:
 	UPROPERTY(VisibleAnywhere)
 	USpringArmComponent* SpringArmComp;
 	
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<AActor> ProjectileClass;
+	
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
 	UFUNCTION()
 	void MoveForward(float value);
+
+	UFUNCTION()
+	void MoveRight(float value);
+
+	UFUNCTION()
+	void PrimaryAttack();
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
