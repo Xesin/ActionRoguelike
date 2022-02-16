@@ -17,9 +17,13 @@ ASExplosiveBarrel::ASExplosiveBarrel()
 
 	RadialForce = CreateDefaultSubobject<URadialForceComponent>("RadialForce");
 	RadialForce->SetupAttachment(RootComponent);
-	RadialForce->ImpulseStrength = 60000.f;
-	RadialForce->Radius = 350.f;
-
+	RadialForce->ImpulseStrength = 2000.f;
+	RadialForce->Radius = 600.f;
+	RadialForce->bIgnoreOwningActor = true;
+	RadialForce->bImpulseVelChange = true;
+	
+	MeshComp->SetSimulatePhysics(true);
+	
 	bExploded = false;
 }
 
@@ -37,6 +41,15 @@ void ASExplosiveBarrel::OnHitExplode(AActor* Actor, AActor* Actor1, FVector Vect
 	bExploded = true;
 	
 	RadialForce->FireImpulse();
+
+	MeshComp->SetMaterial(0, ExplodedMaterial);
+
+	MeshComp->AddImpulse(FVector::UpVector * 1000.f, NAME_None, true);
+
+	if(ExplosiveEffect)
+	{
+		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ExplosiveEffect, GetActorLocation());
+	}
 }
 
 // Called every frame

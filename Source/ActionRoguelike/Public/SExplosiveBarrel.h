@@ -26,6 +26,12 @@ protected:
 	UPROPERTY(VisibleAnywhere);
 	URadialForceComponent* RadialForce;
 
+	UPROPERTY(EditDefaultsOnly)
+	UMaterialInterface* ExplodedMaterial;
+
+	UPROPERTY(EditDefaultsOnly)
+	UParticleSystem* ExplosiveEffect;
+
 	bool bExploded;
 	
 	// Called when the game starts or when spawned
