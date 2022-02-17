@@ -9,6 +9,8 @@
 class UCameraComponent;
 class USpringArmComponent;
 class ASMagicProjectile;
+class USInteractionComponent;
+
 UCLASS()
 class ACTIONROGUELIKE_API ASCharacter : public ACharacter
 {
@@ -27,6 +29,9 @@ protected:
 	
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<AActor> ProjectileClass;
+
+	UPROPERTY(VisibleAnywhere)
+	USInteractionComponent* InteractionComp;
 	
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -39,6 +44,9 @@ protected:
 
 	UFUNCTION()
 	void PrimaryAttack();
+	
+	UFUNCTION()
+	void PrimaryInteract();
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;

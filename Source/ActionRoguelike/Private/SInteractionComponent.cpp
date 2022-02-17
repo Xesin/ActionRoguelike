@@ -3,6 +3,7 @@
 
 #include "SInteractionComponent.h"
 
+#include "DrawDebugHelpers.h"
 #include "SGameplayInterface.h"
 
 // Sets default values for this component's properties
@@ -36,7 +37,7 @@ void USInteractionComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 
 void USInteractionComponent::PrimaryInteract()
 {
-	UWorld* world = GetWorld();
+	UWorld* World = GetWorld();
 
 	FCollisionObjectQueryParams ObjectQueryParams;
 	ObjectQueryParams.AddObjectTypesToQuery(ECC_WorldDynamic);
@@ -50,16 +51,32 @@ void USInteractionComponent::PrimaryInteract()
 	
 	FVector End = EyeLocation + (EyeRotation.Vector() * 1000);
 	
-	FHitResult Hit;
-	if(world->LineTraceSingleByObjectType(Hit, EyeLocation, End, ObjectQueryParams))
+	// FHitResult Hit;
+	// bool BlockingHit = World->LineTraceSingleByObjectType(Hit, EyeLocation, End, ObjectQueryParams);
+
+	float Radius = 30.f;
+	
+	TArray<FHitResult> Hits;
+	FCollisionShape Shape;
+	Shape.SetSphere(Radius);
+	
+	bool BlockingHit = World->SweepMultiByObjectType(Hits, EyeLocation, End, FQuat::Identity, ObjectQueryParams, Shape);
+	FColor LineColor = BlockingHit ? FColor::Green : FColor::Red;
+	for (FHitResult Hit : Hits)
 	{
 		AActor* HitActor = Hit.GetActor();
 
-		if(HitActor->Implements<ISGameplayInterface>())
+		if(HitActor && HitActor->Implements<USGameplayInterface>())
 		{
 			APawn* MyPawn = Cast<APawn>(MyOwner);
 			
 			ISGameplayInterface::Execute_Interact(HitActor, MyPawn);
+
 		}
+		
+		DrawDebugSphere(World, Hit.ImpactPoint, Radius, 32, LineColor, false, 2.0f, 0.f, 1.f);
+		break;
 	}
+	
+	DrawDebugLine(World, EyeLocation, End, LineColor, false, 2.0f, 0.f, 2.0f);
 }
