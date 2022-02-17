@@ -74,7 +74,7 @@ void USInteractionComponent::PrimaryInteract()
 
 		}
 		
-		DrawDebugSphere(World, Hit.ImpactPoint, Radius, 32, LineColor, false, 2.0f, 0.f, 1.f);
+		DrawDebugSphere(World, Hit.ImpactPoint, Radius, 32, LineColor, false, 2.0f, 0.f);
 		break;
 	}
 	

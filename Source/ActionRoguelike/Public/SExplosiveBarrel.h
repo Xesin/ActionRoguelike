@@ -34,11 +34,10 @@ protected:
 
 	bool bExploded;
 	
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
+	virtual void PostInitializeComponents() override;
 
 	UFUNCTION()
-	void OnHitExplode(AActor* Actor, AActor* Actor1, FVector Vector, const FHitResult& HitResult);	
+	void OnHitExplode(UPrimitiveComponent* Actor, AActor* Actor1, UPrimitiveComponent* OtherComp, FVector NormalizedImpulse, const FHitResult& HitResult);	
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;

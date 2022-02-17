@@ -21,20 +21,21 @@ ASExplosiveBarrel::ASExplosiveBarrel()
 	RadialForce->Radius = 600.f;
 	RadialForce->bIgnoreOwningActor = true;
 	RadialForce->bImpulseVelChange = true;
-	
+	RadialForce->AddCollisionChannelToAffect(ECC_WorldDynamic);
+
 	MeshComp->SetSimulatePhysics(true);
 	
 	bExploded = false;
 }
 
 // Called when the game starts or when spawned
-void ASExplosiveBarrel::BeginPlay()
+void ASExplosiveBarrel::PostInitializeComponents()
 {
-	Super::BeginPlay();
-	OnActorHit.AddDynamic(this, &ASExplosiveBarrel::OnHitExplode);
+	Super::PostInitializeComponents();
+	MeshComp->OnComponentHit.AddDynamic(this, &ASExplosiveBarrel::OnHitExplode);
 }
 
-void ASExplosiveBarrel::OnHitExplode(AActor* Actor, AActor* Actor1, FVector Vector, const FHitResult& HitResult)
+void ASExplosiveBarrel::OnHitExplode(UPrimitiveComponent* Actor, AActor* Actor1, UPrimitiveComponent* OtherComp, FVector NormalizedImpulse, const FHitResult& HitResult)
 {
 	if(bExploded) return;
 

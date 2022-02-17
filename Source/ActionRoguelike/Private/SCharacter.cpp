@@ -55,14 +55,21 @@ void ASCharacter::MoveRight(float value)
 	AddMovementInput(RightVector, value);
 }
 
-void ASCharacter::PrimaryAttack()
+void ASCharacter::PrimaryAttack_TimeElapsed()
 {
 	FTransform SpawnTM = FTransform(GetControlRotation() ,GetMesh()->GetSocketLocation("Muzzle_01"));
 
 	FActorSpawnParameters SpawnParams;
 	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-	
+	SpawnParams.Instigator = this;
 	GetWorld()->SpawnActor<AActor>(ProjectileClass, SpawnTM, SpawnParams);
+}
+
+void ASCharacter::PrimaryAttack()
+{
+	PlayAnimMontage(AttackAnim);
+
+	GetWorldTimerManager().SetTimer(TimerHandle_PrimaryAttack, this, &ASCharacter::PrimaryAttack_TimeElapsed, 0.2f); 
 }
 
 void ASCharacter::PrimaryInteract()
