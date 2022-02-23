@@ -57,24 +57,65 @@ void ASCharacter::MoveRight(float value)
 
 void ASCharacter::PrimaryAttack_TimeElapsed()
 {
-	FTransform SpawnTM = FTransform(GetControlRotation() ,GetMesh()->GetSocketLocation("Muzzle_01"));
+	SpawnProjectile(ProjectileClass);
+}
 
-	FActorSpawnParameters SpawnParams;
-	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-	SpawnParams.Instigator = this;
-	GetWorld()->SpawnActor<AActor>(ProjectileClass, SpawnTM, SpawnParams);
+void ASCharacter::SecondaryAttack_TimeElapsed()
+{
+	SpawnProjectile(SecondaryProjectileClass);
 }
 
 void ASCharacter::PrimaryAttack()
 {
-	PlayAnimMontage(AttackAnim);
+	if(ensure(AttackAnim))
+		PlayAnimMontage(AttackAnim);
 
 	GetWorldTimerManager().SetTimer(TimerHandle_PrimaryAttack, this, &ASCharacter::PrimaryAttack_TimeElapsed, 0.2f); 
+}
+
+void ASCharacter::SecondaryAttack()
+{
+	if(ensure(SecondaryAttackAnim))
+		PlayAnimMontage(SecondaryAttackAnim);
+
+	GetWorldTimerManager().SetTimer(TimerHandle_SecondaryAttack, this, &ASCharacter::SecondaryAttack_TimeElapsed, 0.2f); 
 }
 
 void ASCharacter::PrimaryInteract()
 {
 	InteractionComp->PrimaryInteract();
+}
+
+void ASCharacter::SpawnProjectile(TSubclassOf<AActor> ClassToSpawn)
+{
+	if(ensure(ClassToSpawn))
+	{
+		FVector StartPos = CameraComp->GetComponentLocation();
+		FVector RayDirection = CameraComp->GetForwardVector();
+	
+		FVector EndPos = StartPos + (RayDirection * 4000);
+	
+		FHitResult Hit;
+		FRotator ProjectileRotation = FQuat::Identity.Rotator();
+		FVector ProjectileSpawnPos = GetMesh()->GetSocketLocation("Muzzle_01");
+		bool BlockingHit = GetWorld()->LineTraceSingleByChannel(Hit, StartPos, EndPos, ECC_Visibility);
+	
+		if(BlockingHit)
+		{
+			ProjectileRotation = FRotationMatrix::MakeFromX(Hit.Location - ProjectileSpawnPos).Rotator();
+		}
+		else
+		{
+			ProjectileRotation = FRotationMatrix::MakeFromX(EndPos - ProjectileSpawnPos).Rotator();
+		}
+	
+		FTransform SpawnTM = FTransform(ProjectileRotation ,ProjectileSpawnPos);
+
+		FActorSpawnParameters SpawnParams;
+		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+		SpawnParams.Instigator = this;
+		GetWorld()->SpawnActor<AActor>(ClassToSpawn, SpawnTM, SpawnParams);
+	}
 }
 
 // Called every frame
@@ -96,6 +137,7 @@ void ASCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	PlayerInputComponent->BindAxis("LookUp", this, &APawn::AddControllerPitchInput);
 	
 	PlayerInputComponent->BindAction("PrimaryAttack", EInputEvent::IE_Pressed, this, &ASCharacter::PrimaryAttack);
+	PlayerInputComponent->BindAction("SecondaryAttack", EInputEvent::IE_Pressed, this, &ASCharacter::SecondaryAttack);
 	PlayerInputComponent->BindAction("PrimaryInteract", EInputEvent::IE_Pressed, this, &ASCharacter::PrimaryInteract);
 	PlayerInputComponent->BindAction("Jump", EInputEvent::IE_Pressed, this, &ASCharacter::Jump);
 }

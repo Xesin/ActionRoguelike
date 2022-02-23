@@ -26,18 +26,24 @@ protected:
 	
 	UPROPERTY(VisibleAnywhere)
 	USpringArmComponent* SpringArmComp;
-	
 
 	UPROPERTY(VisibleAnywhere)
 	USInteractionComponent* InteractionComp;
 
 	UPROPERTY(EditAnywhere, Category = "Attack")
 	TSubclassOf<AActor> ProjectileClass;
+
+	UPROPERTY(EditAnywhere, Category = "Attack")
+	TSubclassOf<AActor> SecondaryProjectileClass;
 	
 	UPROPERTY(EditAnywhere, Category = "Attack")
 	UAnimMontage* AttackAnim;
 	
+	UPROPERTY(EditAnywhere, Category = "Attack")
+	UAnimMontage* SecondaryAttackAnim;
+	
 	FTimerHandle TimerHandle_PrimaryAttack;
+	FTimerHandle TimerHandle_SecondaryAttack;
 
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -50,12 +56,20 @@ protected:
 
 	UFUNCTION()
 	void PrimaryAttack_TimeElapsed();
+
+	UFUNCTION()
+	void SecondaryAttack_TimeElapsed();
 	
 	UFUNCTION()
 	void PrimaryAttack();
+
+	UFUNCTION()
+	void SecondaryAttack();
 	
 	UFUNCTION()
 	void PrimaryInteract();
+
+	void SpawnProjectile(TSubclassOf<AActor> ClassToSpawn);
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
