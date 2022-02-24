@@ -65,12 +65,17 @@ void ASCharacter::SecondaryAttack_TimeElapsed()
 	SpawnProjectile(SecondaryProjectileClass);
 }
 
+void ASCharacter::DashAbility_TimeElapsed()
+{
+	SpawnProjectile(DashAbilityClass);
+}
+
 void ASCharacter::PrimaryAttack()
 {
 	if(ensure(AttackAnim))
 		PlayAnimMontage(AttackAnim);
 
-	GetWorldTimerManager().SetTimer(TimerHandle_PrimaryAttack, this, &ASCharacter::PrimaryAttack_TimeElapsed, 0.2f); 
+	GetWorldTimerManager().SetTimer(TimerHandle_MontageAnimation, this, &ASCharacter::PrimaryAttack_TimeElapsed, 0.2f); 
 }
 
 void ASCharacter::SecondaryAttack()
@@ -78,12 +83,20 @@ void ASCharacter::SecondaryAttack()
 	if(ensure(SecondaryAttackAnim))
 		PlayAnimMontage(SecondaryAttackAnim);
 
-	GetWorldTimerManager().SetTimer(TimerHandle_SecondaryAttack, this, &ASCharacter::SecondaryAttack_TimeElapsed, 0.2f); 
+	GetWorldTimerManager().SetTimer(TimerHandle_MontageAnimation, this, &ASCharacter::SecondaryAttack_TimeElapsed, 0.2f); 
 }
 
 void ASCharacter::PrimaryInteract()
 {
 	InteractionComp->PrimaryInteract();
+}
+
+void ASCharacter::DashAbility()
+{
+	if(ensure(AttackAnim))
+		PlayAnimMontage(AttackAnim);
+
+	GetWorldTimerManager().SetTimer(TimerHandle_MontageAnimation, this, &ASCharacter::DashAbility_TimeElapsed, 0.2f); 
 }
 
 void ASCharacter::SpawnProjectile(TSubclassOf<AActor> ClassToSpawn)
@@ -139,6 +152,7 @@ void ASCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	PlayerInputComponent->BindAction("PrimaryAttack", EInputEvent::IE_Pressed, this, &ASCharacter::PrimaryAttack);
 	PlayerInputComponent->BindAction("SecondaryAttack", EInputEvent::IE_Pressed, this, &ASCharacter::SecondaryAttack);
 	PlayerInputComponent->BindAction("PrimaryInteract", EInputEvent::IE_Pressed, this, &ASCharacter::PrimaryInteract);
+	PlayerInputComponent->BindAction("DashAbility", EInputEvent::IE_Pressed, this, &ASCharacter::DashAbility);
 	PlayerInputComponent->BindAction("Jump", EInputEvent::IE_Pressed, this, &ASCharacter::Jump);
 }
 

@@ -41,9 +41,11 @@ protected:
 	
 	UPROPERTY(EditAnywhere, Category = "Attack")
 	UAnimMontage* SecondaryAttackAnim;
+
+	UPROPERTY(EditAnywhere, Category = "Ability")
+	TSubclassOf<AActor> DashAbilityClass;
 	
-	FTimerHandle TimerHandle_PrimaryAttack;
-	FTimerHandle TimerHandle_SecondaryAttack;
+	FTimerHandle TimerHandle_MontageAnimation;
 
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -59,6 +61,9 @@ protected:
 
 	UFUNCTION()
 	void SecondaryAttack_TimeElapsed();
+
+	UFUNCTION()
+	void DashAbility_TimeElapsed();
 	
 	UFUNCTION()
 	void PrimaryAttack();
@@ -68,8 +73,12 @@ protected:
 	
 	UFUNCTION()
 	void PrimaryInteract();
+	
+	UFUNCTION()
+	void DashAbility();
 
 	void SpawnProjectile(TSubclassOf<AActor> ClassToSpawn);
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;

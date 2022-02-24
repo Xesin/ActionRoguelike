@@ -17,11 +17,13 @@ ASBaseProjectile::ASBaseProjectile()
 	RootComponent = SphereComp;
 	
 	SphereComp->SetCollisionProfileName("Projectile");
+	SphereComp->IgnoreActorWhenMoving(GetInstigator(), true);
 	
 	MovementComp = CreateDefaultSubobject<UProjectileMovementComponent>("MovementComp");
 	MovementComp->InitialSpeed = 1000.0;
 	MovementComp->bRotationFollowsVelocity = true;
 	MovementComp->bInitialVelocityInLocalSpace = true;
+	MovementComp->ProjectileGravityScale = 0.f;
 	
 	EffectComp = CreateDefaultSubobject<UParticleSystemComponent>("EffectComp");
 	EffectComp->SetupAttachment(RootComponent);
