@@ -10,6 +10,7 @@ class UCameraComponent;
 class USpringArmComponent;
 class ASMagicProjectile;
 class USInteractionComponent;
+class USAttributesComponent;
 
 UCLASS()
 class ACTIONROGUELIKE_API ASCharacter : public ACharacter
@@ -21,32 +22,6 @@ public:
 	ASCharacter();
 
 protected:
-	UPROPERTY(VisibleAnywhere)
-	UCameraComponent* CameraComp;
-	
-	UPROPERTY(VisibleAnywhere)
-	USpringArmComponent* SpringArmComp;
-
-	UPROPERTY(VisibleAnywhere)
-	USInteractionComponent* InteractionComp;
-
-	UPROPERTY(EditAnywhere, Category = "Attack")
-	TSubclassOf<AActor> ProjectileClass;
-
-	UPROPERTY(EditAnywhere, Category = "Attack")
-	TSubclassOf<AActor> SecondaryProjectileClass;
-	
-	UPROPERTY(EditAnywhere, Category = "Attack")
-	UAnimMontage* AttackAnim;
-	
-	UPROPERTY(EditAnywhere, Category = "Attack")
-	UAnimMontage* SecondaryAttackAnim;
-
-	UPROPERTY(EditAnywhere, Category = "Ability")
-	TSubclassOf<AActor> DashAbilityClass;
-	
-	FTimerHandle TimerHandle_MontageAnimation;
-
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
@@ -86,4 +61,34 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+protected:
+	UPROPERTY(VisibleAnywhere)
+	UCameraComponent* CameraComp;
+	
+	UPROPERTY(VisibleAnywhere)
+	USpringArmComponent* SpringArmComp;
+
+	UPROPERTY(VisibleAnywhere)
+	USInteractionComponent* InteractionComp;
+
+	UPROPERTY(EditAnywhere, Category = "Attack")
+	TSubclassOf<AActor> ProjectileClass;
+
+	UPROPERTY(EditAnywhere, Category = "Attack")
+	TSubclassOf<AActor> SecondaryProjectileClass;
+	
+	UPROPERTY(EditAnywhere, Category = "Attack")
+	UAnimMontage* AttackAnim;
+	
+	UPROPERTY(EditAnywhere, Category = "Attack")
+	UAnimMontage* SecondaryAttackAnim;
+
+	UPROPERTY(EditAnywhere, Category = "Ability")
+	TSubclassOf<AActor> DashAbilityClass;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	USAttributesComponent* AttributeComp;
+	
+	FTimerHandle TimerHandle_MontageAnimation;
+	
 };

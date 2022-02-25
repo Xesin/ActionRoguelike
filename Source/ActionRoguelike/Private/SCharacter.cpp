@@ -3,6 +3,7 @@
 
 #include "SCharacter.h"
 
+#include "SAttributesComponent.h"
 #include "SInteractionComponent.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -26,6 +27,8 @@ ASCharacter::ASCharacter()
 	InteractionComp = CreateDefaultSubobject<USInteractionComponent>("InteractionComp");
 
 	GetCharacterMovement()->bOrientRotationToMovement = true;
+
+	AttributeComp = CreateDefaultSubobject<USAttributesComponent>("AttributeComp");
 }
 
 // Called when the game starts or when spawned

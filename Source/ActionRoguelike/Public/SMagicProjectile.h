@@ -20,5 +20,10 @@ class ACTIONROGUELIKE_API ASMagicProjectile : public ASBaseProjectile
 public:	
 	// Sets default values for this actor's properties
 	ASMagicProjectile();
+
+protected:
+	UFUNCTION()
+	void OnActorOverlap(UPrimitiveComponent* Comp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int I, bool bArg, const FHitResult& HitResult);
 	
+	virtual void PostInitializeComponents() override;
 };
