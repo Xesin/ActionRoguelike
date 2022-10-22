@@ -38,6 +38,12 @@ void ASCharacter::BeginPlay()
 	
 }
 
+void ASCharacter::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
+	AttributeComp->OnHealthChanged.AddDynamic(this, &ASCharacter::OnHealthChanged);
+}
+
 void ASCharacter::MoveForward(float value)
 {
 	FRotator ControlRot = GetControlRotation();
@@ -61,20 +67,25 @@ void ASCharacter::MoveRight(float value)
 void ASCharacter::PrimaryAttack_TimeElapsed()
 {
 	SpawnProjectile(ProjectileClass);
+	GetWorldTimerManager().ClearTimer(TimerHandle_MontageAnimation);
 }
 
 void ASCharacter::SecondaryAttack_TimeElapsed()
 {
 	SpawnProjectile(SecondaryProjectileClass);
+	GetWorldTimerManager().ClearTimer(TimerHandle_MontageAnimation);
 }
 
 void ASCharacter::DashAbility_TimeElapsed()
 {
 	SpawnProjectile(DashAbilityClass);
+	GetWorldTimerManager().ClearTimer(TimerHandle_MontageAnimation);
 }
 
 void ASCharacter::PrimaryAttack()
 {
+	if (TimerHandle_MontageAnimation.IsValid()) return;
+
 	if(ensure(AttackAnim))
 		PlayAnimMontage(AttackAnim);
 
@@ -83,6 +94,8 @@ void ASCharacter::PrimaryAttack()
 
 void ASCharacter::SecondaryAttack()
 {
+	if (TimerHandle_MontageAnimation.IsValid()) return;
+
 	if(ensure(SecondaryAttackAnim))
 		PlayAnimMontage(SecondaryAttackAnim);
 
@@ -100,6 +113,14 @@ void ASCharacter::DashAbility()
 		PlayAnimMontage(AttackAnim);
 
 	GetWorldTimerManager().SetTimer(TimerHandle_MontageAnimation, this, &ASCharacter::DashAbility_TimeElapsed, 0.2f); 
+}
+
+void ASCharacter::OnHealthChanged(AActor* InstigatorActor, USAttributesComponent* OwningComp, float NewHealth, float Delta)
+{
+	if (Delta < 0.0)
+	{
+		GetMesh()->SetScalarParameterValueOnMaterials("TimeToHit", GetWorld()->TimeSeconds);
+	}
 }
 
 void ASCharacter::SpawnProjectile(TSubclassOf<AActor> ClassToSpawn)

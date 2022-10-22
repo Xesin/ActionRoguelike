@@ -25,6 +25,8 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	virtual void PostInitializeComponents() override;
+
 	UFUNCTION()
 	void MoveForward(float value);
 
@@ -51,6 +53,9 @@ protected:
 	
 	UFUNCTION()
 	void DashAbility();
+
+	UFUNCTION()
+	void OnHealthChanged(AActor* InstigatorActor, USAttributesComponent* OwningComp, float NewHealth, float Delta);
 
 	void SpawnProjectile(TSubclassOf<AActor> ClassToSpawn);
 
