@@ -23,7 +23,6 @@ public:
 
 protected:
 	UFUNCTION()
-	void OnActorOverlap(UPrimitiveComponent* Comp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int I, bool bArg, const FHitResult& HitResult);
-	
-	virtual void PostInitializeComponents() override;
+	void OnActorHit(UPrimitiveComponent* PrimitiveComponent, AActor* Actor, UPrimitiveComponent* PrimitiveComponent1, FVector Vector, const FHitResult& HitResult) override;
+
 };

@@ -11,51 +11,41 @@
 ASDashProjectile::ASDashProjectile()
 {
 	MovementComp->InitialSpeed = 6000.f;
+	TeleportDelay = 0.2f;
+	DetonateDelay = 0.2f;
 }
 
-void ASDashProjectile::OnProjectileHit(UPrimitiveComponent* Component, AActor* Actor,
-                                       UPrimitiveComponent* OtherComponent, FVector Vector, const FHitResult& HitResult)
-{
-	GetWorldTimerManager().ClearTimer(TimerHandle_ExplodeTimer);
-
-	DestroyParticleAndTeleport();
-}
-
-void ASDashProjectile::TeleportInstigatorToCurrentPosition()
+void ASDashProjectile::TeleportInstigator()
 {
 	AActor* InstigatorActor = GetInstigator();
 
 	if(InstigatorActor)
 	{
-		InstigatorActor->SetActorLocation(GetActorLocation(), false, nullptr, ETeleportType::ResetPhysics);
+		InstigatorActor->TeleportTo(GetActorLocation(), InstigatorActor->GetActorRotation(), false, false);
 	}
-	
-	Destroy();
 }
 
-void ASDashProjectile::DestroyParticleAndTeleport()
+void ASDashProjectile::Explode_Implementation()
 {
-	MovementComp->Velocity = FVector::ZeroVector;
-	EffectComp->Deactivate();
-	
-	if(ensure(ExplosionParticle))
+	GetWorldTimerManager().ClearTimer(TimerHandle_DelayedDetonate);
+
+	EffectComp->DeactivateSystem();
+
+	MovementComp->StopMovementImmediately();
+	SetActorEnableCollision(false);
+
+	if (ensure(ImpactVFX))
 	{
-		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ExplosionParticle, GetActorLocation());
+		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ImpactVFX, GetActorLocation());
 	}
-	
-	GetWorldTimerManager().SetTimer(TimerHandle_TeleportTimer, this, &ASDashProjectile::TeleportInstigatorToCurrentPosition, 0.2f);
-}
 
-void ASDashProjectile::PostInitializeComponents()
-{
-	Super::PostInitializeComponents();
-
-	SphereComp->OnComponentHit.AddDynamic(this, &ASDashProjectile::OnProjectileHit);
+	FTimerHandle TimerHandle_DelayedTeleport;
+	GetWorldTimerManager().SetTimer(TimerHandle_DelayedTeleport, this, &ASDashProjectile::TeleportInstigator, TeleportDelay);
 }
 
 void ASDashProjectile::BeginPlay()
 {
 	Super::BeginPlay();
 
-	 GetWorldTimerManager().SetTimer(TimerHandle_ExplodeTimer, this, &ASDashProjectile::DestroyParticleAndTeleport, 0.2f);
+	GetWorldTimerManager().SetTimer(TimerHandle_DelayedDetonate, this, &ASDashProjectile::Explode, DetonateDelay);
 }

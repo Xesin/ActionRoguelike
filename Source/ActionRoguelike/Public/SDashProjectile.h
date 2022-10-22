@@ -21,21 +21,17 @@ public:
 	
 protected:
 	UFUNCTION()
-	void OnProjectileHit(UPrimitiveComponent* PrimitiveComponent, AActor* Actor, UPrimitiveComponent* PrimitiveComponent1, FVector Vector, const FHitResult& HitResult);
+	void TeleportInstigator();
 
-	UFUNCTION()
-	void TeleportInstigatorToCurrentPosition();
-
-	UFUNCTION(BlueprintCallable)
-	void DestroyParticleAndTeleport();
-
-	virtual void PostInitializeComponents() override;
+	virtual void Explode_Implementation() override;
 
 	virtual void BeginPlay() override;
 protected:
-	FTimerHandle TimerHandle_ExplodeTimer;
-	FTimerHandle TimerHandle_TeleportTimer;
+	FTimerHandle TimerHandle_DelayedDetonate;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	UParticleSystem* ExplosionParticle;
+	UPROPERTY(EditDefaultsOnly, Category = "Telepor")
+	float TeleportDelay;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Telepor")
+	float DetonateDelay;
 };

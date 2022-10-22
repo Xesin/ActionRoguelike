@@ -12,25 +12,17 @@ ASMagicProjectile::ASMagicProjectile()
 {
 }
 
-void ASMagicProjectile::OnActorOverlap(UPrimitiveComponent* Comp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int I,
-	bool bArg, const FHitResult& HitResult)
+void ASMagicProjectile::OnActorHit(UPrimitiveComponent* PrimitiveComponent, AActor* Actor, UPrimitiveComponent* PrimitiveComponent1, FVector Vector, const FHitResult& HitResult)
 {
-	if(OtherActor && OtherActor != GetInstigator())
+	if (Actor && Actor != GetInstigator())
 	{
-		USAttributesComponent* Attributes = Cast<USAttributesComponent>(OtherActor->GetComponentByClass(USAttributesComponent::StaticClass()));
-		if(Attributes)
+		USAttributesComponent* Attributes = Cast<USAttributesComponent>(Actor->GetComponentByClass(USAttributesComponent::StaticClass()));
+		if (Attributes)
 		{
 			Attributes->ApplyHealthChange(-20.f);
 
-			Destroy();
 		}
+		Super::OnActorHit(PrimitiveComponent, Actor, PrimitiveComponent1, Vector, HitResult);
 	}
-}
-
-void ASMagicProjectile::PostInitializeComponents()
-{
-	Super::PostInitializeComponents();
-
-	SphereComp->OnComponentBeginOverlap.AddDynamic(this, &ASMagicProjectile::OnActorOverlap);
 }
 

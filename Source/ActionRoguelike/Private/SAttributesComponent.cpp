@@ -4,7 +4,6 @@
 USAttributesComponent::USAttributesComponent()
 {
 	PrimaryComponentTick.bCanEverTick = false;
-
 	Health = 100;
 }
 
@@ -15,4 +14,9 @@ bool USAttributesComponent::ApplyHealthChange(float Delta)
 	OnHealthChanged.Broadcast(nullptr, this, Health, Delta);
 	
 	return true;
+}
+
+bool USAttributesComponent::IsAlive()
+{
+	return Health > 0.f;
 }

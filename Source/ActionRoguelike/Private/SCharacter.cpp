@@ -127,39 +127,40 @@ void ASCharacter::SpawnProjectile(TSubclassOf<AActor> ClassToSpawn)
 {
 	if(ensure(ClassToSpawn))
 	{
-		FVector StartPos = CameraComp->GetComponentLocation();
-		FVector RayDirection = CameraComp->GetForwardVector();
-	
-		FVector EndPos = StartPos + (RayDirection * 4000);
-	
-		FHitResult Hit;
-		FRotator ProjectileRotation = FQuat::Identity.Rotator();
-		FVector ProjectileSpawnPos = GetMesh()->GetSocketLocation("Muzzle_01");
-		bool BlockingHit = GetWorld()->LineTraceSingleByChannel(Hit, StartPos, EndPos, ECC_Visibility);
-	
-		if(BlockingHit)
-		{
-			ProjectileRotation = FRotationMatrix::MakeFromX(Hit.Location - ProjectileSpawnPos).Rotator();
-		}
-		else
-		{
-			ProjectileRotation = FRotationMatrix::MakeFromX(EndPos - ProjectileSpawnPos).Rotator();
-		}
-	
-		FTransform SpawnTM = FTransform(ProjectileRotation ,ProjectileSpawnPos);
+		FVector HandLocation = GetMesh()->GetSocketLocation("Muzzle_01");
 
 		FActorSpawnParameters SpawnParams;
 		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 		SpawnParams.Instigator = this;
+
+	
+		FCollisionShape Shape;
+		Shape.SetSphere(20.0f);
+
+		FCollisionQueryParams Params;
+		Params.AddIgnoredActor(this);
+
+		FCollisionObjectQueryParams ObjParams;
+		ObjParams.AddObjectTypesToQuery(ECC_WorldDynamic);
+		ObjParams.AddObjectTypesToQuery(ECC_WorldStatic);
+		ObjParams.AddObjectTypesToQuery(ECC_Pawn);
+
+		FVector TraceStart = CameraComp->GetComponentLocation();
+		FVector RayDirection = GetControlRotation().Vector();
+		FVector TraceEnd = TraceStart + (RayDirection * 5000);
+	
+		FHitResult Hit;
+	
+		if(GetWorld()->SweepSingleByObjectType(Hit, TraceStart, TraceEnd, FQuat::Identity, ObjParams, Shape, Params))
+		{
+			TraceEnd = Hit.ImpactPoint;
+		}
+	
+		FRotator ProjRotation = FRotationMatrix::MakeFromX(TraceEnd - HandLocation).Rotator();
+
+		FTransform SpawnTM = FTransform(ProjRotation ,HandLocation);		
 		GetWorld()->SpawnActor<AActor>(ClassToSpawn, SpawnTM, SpawnParams);
 	}
-}
-
-// Called every frame
-void ASCharacter::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-
 }
 
 // Called to bind functionality to input
