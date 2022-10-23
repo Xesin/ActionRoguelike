@@ -18,16 +18,25 @@ class ACTIONROGUELIKE_API USAttributesComponent : public UActorComponent
 public:	
 	USAttributesComponent();
 
-protected:
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Attributes")
-	float Health;
-public:
-	UPROPERTY(BlueprintAssignable)
-	FOnHealthChanged OnHealthChanged;
-	
 	UFUNCTION(BlueprintCallable, Category = "Attributes")
 	bool ApplyHealthChange(float Delta);
 
+	UFUNCTION(BlueprintCallable, BlueprintPure) 
+	bool IsAlive() const;
+
 	UFUNCTION(BlueprintCallable, BlueprintPure)
-	bool IsAlive();
+	float GetMaxHealth() const;
+
+	virtual void BeginPlay() override;
+protected:
+	UPROPERTY(EditInstanceOnly, BlueprintReadWrite, Category = "Attributes")
+	float Health;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Attributes")
+	float HealthMax;
+
+public:
+	UPROPERTY(BlueprintAssignable)
+	FOnHealthChanged OnHealthChanged;
+
 };

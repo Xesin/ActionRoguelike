@@ -49,7 +49,7 @@ void USInteractionComponent::PrimaryInteract()
 
 	MyOwner->GetActorEyesViewPoint(EyeLocation, EyeRotation);
 	
-	FVector End = EyeLocation + (EyeRotation.Vector() * 1000);
+	FVector End = EyeLocation + (EyeRotation.Vector() * 500);
 	
 	// FHitResult Hit;
 	// bool BlockingHit = World->LineTraceSingleByObjectType(Hit, EyeLocation, End, ObjectQueryParams);
@@ -74,9 +74,9 @@ void USInteractionComponent::PrimaryInteract()
 
 		}
 		
-		DrawDebugSphere(World, Hit.ImpactPoint, Radius, 32, LineColor, false, 2.0f, 0.f);
+		//DrawDebugSphere(World, Hit.ImpactPoint, Radius, 32, LineColor, false, 2.0f, 0.f);
 		break;
 	}
 	
-	DrawDebugLine(World, EyeLocation, End, LineColor, false, 2.0f, 0.f, 2.0f);
+	//DrawDebugLine(World, EyeLocation, End, LineColor, false, 2.0f, 0.f, 2.0f);
 }

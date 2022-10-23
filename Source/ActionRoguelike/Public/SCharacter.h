@@ -27,6 +27,8 @@ protected:
 
 	virtual void PostInitializeComponents() override;
 
+	virtual void GetActorEyesViewPoint(FVector& OutLocation, FRotator& OutRotation) const override;
+
 	UFUNCTION()
 	void MoveForward(float value);
 
@@ -90,6 +92,11 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	USAttributesComponent* AttributeComp;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Effects")
+	UParticleSystem* PrimaryCastVFX;
+	UPROPERTY(EditDefaultsOnly, Category = "Effects")
+	FName PrimaryCastSocket;
 	
 	FTimerHandle TimerHandle_MontageAnimation;
 	

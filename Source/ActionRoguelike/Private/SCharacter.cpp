@@ -8,6 +8,7 @@
 #include "Camera/CameraComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 ASCharacter::ASCharacter()
@@ -42,6 +43,12 @@ void ASCharacter::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
 	AttributeComp->OnHealthChanged.AddDynamic(this, &ASCharacter::OnHealthChanged);
+}
+
+void ASCharacter::GetActorEyesViewPoint(FVector& OutLocation, FRotator& OutRotation) const
+{
+	OutLocation = CameraComp->GetComponentLocation();
+	OutRotation = GetControlRotation();
 }
 
 void ASCharacter::MoveForward(float value)
@@ -86,6 +93,11 @@ void ASCharacter::PrimaryAttack()
 {
 	if (TimerHandle_MontageAnimation.IsValid()) return;
 
+	if (ensure(PrimaryCastVFX))
+	{
+		UGameplayStatics::SpawnEmitterAttached(PrimaryCastVFX, GetMesh(), PrimaryCastSocket);
+	}
+
 	if(ensure(AttackAnim))
 		PlayAnimMontage(AttackAnim);
 
@@ -120,6 +132,15 @@ void ASCharacter::OnHealthChanged(AActor* InstigatorActor, USAttributesComponent
 	if (Delta < 0.0)
 	{
 		GetMesh()->SetScalarParameterValueOnMaterials("TimeToHit", GetWorld()->TimeSeconds);
+	}
+
+	if (NewHealth <= 0.f && Delta < 0.f)
+	{
+		APlayerController* PC = Cast<APlayerController>(GetController());
+		if (PC)
+		{
+			DisableInput(PC);
+		}
 	}
 }
 

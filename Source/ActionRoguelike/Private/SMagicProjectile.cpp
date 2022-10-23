@@ -6,6 +6,8 @@
 #include "SAttributesComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Particles/ParticleSystemComponent.h"
+#include "Kismet/GameplayStatics.h"
+#include "SCharacter.h"
 
 // Sets default values
 ASMagicProjectile::ASMagicProjectile()

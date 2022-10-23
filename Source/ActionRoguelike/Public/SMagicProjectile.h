@@ -24,5 +24,4 @@ public:
 protected:
 	UFUNCTION()
 	void OnActorHit(UPrimitiveComponent* PrimitiveComponent, AActor* Actor, UPrimitiveComponent* PrimitiveComponent1, FVector Vector, const FHitResult& HitResult) override;
-
 };
