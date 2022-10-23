@@ -2,4 +2,18 @@
 
 
 #include "AI/SAIController.h"
+#include "kismet/GameplayStatics.h"
+#include "BehaviorTree/BlackboardComponent.h"
 
+void ASAIController::BeginPlay()
+{
+	Super::BeginPlay();
+
+	RunBehaviorTree(BehaviorTree);
+
+	APawn* MyPawn = UGameplayStatics::GetPlayerPawn(this, 0);
+	if (MyPawn)
+	{
+		GetBlackboardComponent()->SetValueAsObject("TargetActor", MyPawn);
+	}
+}
