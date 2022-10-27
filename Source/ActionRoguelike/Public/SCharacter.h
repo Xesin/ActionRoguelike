@@ -95,7 +95,7 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Effects")
 	UParticleSystem* PrimaryCastVFX;
-	UPROPERTY(EditDefaultsOnly, Category = "Effects")
+	UPROPERTY(VisibleAnywhere, Category = "Effects")
 	FName PrimaryCastSocket;
 	
 	FTimerHandle TimerHandle_MontageAnimation;

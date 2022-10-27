@@ -21,7 +21,7 @@ void ASMagicProjectile::OnActorHit(UPrimitiveComponent* PrimitiveComponent, AAct
 		USAttributesComponent* Attributes = Cast<USAttributesComponent>(Actor->GetComponentByClass(USAttributesComponent::StaticClass()));
 		if (Attributes)
 		{
-			Attributes->ApplyHealthChange(-20.f);
+			Attributes->ApplyHealthChange(-5.f);
 
 		}
 		Super::OnActorHit(PrimitiveComponent, Actor, PrimitiveComponent1, Vector, HitResult);
