@@ -23,6 +23,11 @@ bool USAttributesComponent::IsAlive() const
 	return Health > 0.f;
 }
 
+float USAttributesComponent::GetHealth() const
+{
+	return Health;
+}
+
 void USAttributesComponent::BeginPlay()
 {
 	Super::BeginPlay();

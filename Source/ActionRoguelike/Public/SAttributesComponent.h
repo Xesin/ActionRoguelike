@@ -27,6 +27,9 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	float GetMaxHealth() const;
 
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+	float GetHealth() const;
+
 	virtual void BeginPlay() override;
 protected:
 	UPROPERTY(EditInstanceOnly, BlueprintReadWrite, Category = "Attributes")

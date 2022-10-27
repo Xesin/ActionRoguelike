@@ -8,29 +8,18 @@
 ASHealthPotion::ASHealthPotion()
 {
 	BaseMesh = CreateDefaultSubobject<UStaticMeshComponent>("BaseMesh");
-	RootComponent = BaseMesh;
+	BaseMesh->SetupAttachment(RootComponent);
 	
 	HealthValue = 80.f;
 	RespawnTime = 5.f;
 }
 
-void ASHealthPotion::Interact_Implementation(APawn* InstigatorPawn)
+void ASHealthPotion::ApplyEffect(USAttributesComponent* AttComponent)
 {
-	USAttributesComponent* AttComponent = Cast<USAttributesComponent>(InstigatorPawn->GetComponentByClass(USAttributesComponent::StaticClass()));
-	if (AttComponent)
-	{
-		AttComponent->ApplyHealthChange(HealthValue);
-		
-		BaseMesh->SetHiddenInGame(true, true);
-		BaseMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-
-		FTimerHandle TimerHandle_Respawn;
-		GetWorldTimerManager().SetTimer(TimerHandle_Respawn, this, &ASHealthPotion::Respawn, RespawnTime);
-	}
+	AttComponent->ApplyHealthChange(HealthValue);
 }
 
-void ASHealthPotion::Respawn()
+bool ASHealthPotion::CanBeUsed(USAttributesComponent* AttComponent)
 {
-	BaseMesh->SetHiddenInGame(false, true);
-	BaseMesh->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+	return AttComponent->GetHealth() < AttComponent->GetMaxHealth();
 }

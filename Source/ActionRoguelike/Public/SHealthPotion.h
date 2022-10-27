@@ -5,12 +5,12 @@
 #include "CoreMinimal.h"
 #include "SGameplayInterface.h"
 #include "GameFramework/Actor.h"
+#include "PowerUps/SPowerUp.h"
 #include "SHealthPotion.generated.h"
-
 class UStaticMeshComponent;
 
 UCLASS()
-class ACTIONROGUELIKE_API ASHealthPotion : public AActor, public ISGameplayInterface
+class ACTIONROGUELIKE_API ASHealthPotion : public ASPowerUp
 {
 	GENERATED_BODY()
 	
@@ -18,18 +18,14 @@ public:
 	// Sets default values for this actor's properties
 	ASHealthPotion();
 
-	void Interact_Implementation(APawn* InstigatorPawn) override;
-
 protected:
-	UFUNCTION()
-	void Respawn();
+	void ApplyEffect(USAttributesComponent* AttComponent) override;
 
+	bool CanBeUsed(USAttributesComponent* AttComponent) override;
 protected:
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(VisibleAnywhere, Category = "Copmponents")
 	UStaticMeshComponent* BaseMesh;
 	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Powerup")
 	float HealthValue;
-
-	UPROPERTY(EditDefaultsOnly)
-	float RespawnTime;
 };
