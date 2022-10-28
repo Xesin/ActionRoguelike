@@ -2,11 +2,14 @@
 #include "Perception/PawnSensingComponent.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "AIController.h"
+#include "SAttributesComponent.h"
 
 ASAICharacter::ASAICharacter()
 {
 	PawnSensingComp = CreateDefaultSubobject<UPawnSensingComponent>("PawnSensingComp");
 	TargetActorBBKey = "TargetActor";
+
+	AttributeComp = CreateDefaultSubobject<USAttributesComponent>("AttributeComp");
 }
 
 void ASAICharacter::OnPawnSeen(APawn* Pawn)

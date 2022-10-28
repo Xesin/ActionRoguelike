@@ -7,6 +7,7 @@
 #include "SAICharacter.generated.h"
 
 class UPawnSensingComponent;
+class USAttributesComponent;
 
 UCLASS()
 class ACTIONROGUELIKE_API ASAICharacter : public ACharacter
@@ -28,4 +29,7 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = "BehaviorTree")
 	FName TargetActorBBKey;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	USAttributesComponent* AttributeComp;
 };
