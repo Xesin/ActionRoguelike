@@ -22,13 +22,21 @@ protected:
 	UFUNCTION()
 	void OnPawnSeen(APawn* Pawn);
 
+	UFUNCTION()
+	void OnHealthChanged(AActor* InstigatorActor, USAttributesComponent* OwningComp, float NewHealth, float Delta);
+
 	virtual void PostInitializeComponents() override;
+
+	void SetTargetActor(AActor* NewTarget);
 protected:
 	UPROPERTY(VisibleAnywhere, Category = "Components")
 	UPawnSensingComponent* PawnSensingComp;
 
 	UPROPERTY(EditAnywhere, Category = "BehaviorTree")
 	FName TargetActorBBKey;
+
+	UPROPERTY(VisibleAnywhere, Category = "FX")
+	FName HitFlashParamName;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	USAttributesComponent* AttributeComp;

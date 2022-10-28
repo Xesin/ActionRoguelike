@@ -1,6 +1,27 @@
 
 #include "SAttributesComponent.h"
 
+USAttributesComponent* USAttributesComponent::GetAttributes(AActor* FromActor)
+{
+	if (FromActor)
+	{
+		return Cast<USAttributesComponent>(FromActor->GetComponentByClass(USAttributesComponent::StaticClass()));
+	}
+	return nullptr;
+}
+
+bool USAttributesComponent::IsActorAlive(AActor* FromActor)
+{
+	USAttributesComponent* AttributeComp = GetAttributes(FromActor);
+
+	if (AttributeComp)
+	{
+		return AttributeComp->IsAlive();
+	}
+
+	return false;
+}
+
 USAttributesComponent::USAttributesComponent()
 {
 	PrimaryComponentTick.bCanEverTick = false;
@@ -9,11 +30,11 @@ USAttributesComponent::USAttributesComponent()
 
 
 
-bool USAttributesComponent::ApplyHealthChange(float Delta)
+bool USAttributesComponent::ApplyHealthChange(AActor* InstigatorActor, float Delta)
 {
 	Health += Delta;
 	Health = FMath::Clamp(Health, 0, HealthMax);
-	OnHealthChanged.Broadcast(nullptr, this, Health, Delta);
+	OnHealthChanged.Broadcast(InstigatorActor, this, Health, Delta);
 	
 	return true;
 }

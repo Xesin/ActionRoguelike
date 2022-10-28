@@ -3,6 +3,8 @@
 #include "BehaviorTree/BlackboardComponent.h"
 #include "AIController.h"
 #include "SAttributesComponent.h"
+#include "BrainComponent.h"
+#include "Components/CapsuleComponent.h"
 
 ASAICharacter::ASAICharacter()
 {
@@ -10,19 +12,47 @@ ASAICharacter::ASAICharacter()
 	TargetActorBBKey = "TargetActor";
 
 	AttributeComp = CreateDefaultSubobject<USAttributesComponent>("AttributeComp");
+
+	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
+
+	HitFlashParamName = "TimeToHit";
 }
 
 void ASAICharacter::OnPawnSeen(APawn* Pawn)
 {
-	AAIController* AIC = Cast<AAIController>(GetController());
-	if (AIC)
+	SetTargetActor(Pawn);
+	DrawDebugString(GetWorld(), GetActorLocation(), "PLAYER_SPOTTED", nullptr, FColor::White, 4.f, true);
+}
+
+void ASAICharacter::OnHealthChanged(AActor* InstigatorActor, USAttributesComponent* OwningComp, float NewHealth, float Delta)
+{
+	if (Delta < 0.0)
 	{
-		UBlackboardComponent* BBComp = AIC->GetBlackboardComponent();
+		GetMesh()->SetScalarParameterValueOnMaterials(HitFlashParamName, GetWorld()->TimeSeconds);
 
-		BBComp->SetValueAsObject(TargetActorBBKey, Pawn);
+		if (InstigatorActor != this)
+		{
+			SetTargetActor(InstigatorActor);
+		}
 
-		DrawDebugString(GetWorld(), GetActorLocation(), "PLAYER_SPOTTED", nullptr, FColor::White, 4.f, true);
+		if (NewHealth <= 0.f)
+		{
+			AAIController* AIC = Cast<AAIController>(GetController());
+
+			if (AIC)
+			{
+				AIC->GetBrainComponent()->StopLogic("Killed");
+			}
+
+			GetMesh()->SetAllBodiesSimulatePhysics(true);
+			GetMesh()->SetCollisionProfileName("Ragdoll");
+			GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+			SetLifeSpan(10.f);
+		}
 	}
+
+	
 }
 
 void ASAICharacter::PostInitializeComponents()
@@ -30,4 +60,14 @@ void ASAICharacter::PostInitializeComponents()
 	Super::PostInitializeComponents();
 
 	PawnSensingComp->OnSeePawn.AddDynamic(this, &ASAICharacter::OnPawnSeen);
+	AttributeComp->OnHealthChanged.AddDynamic(this, &ASAICharacter::OnHealthChanged);
+}
+
+void ASAICharacter::SetTargetActor(AActor* NewTarget)
+{
+	AAIController* AIC = Cast<AAIController>(GetController());
+	if (AIC)
+	{
+		AIC->GetBlackboardComponent()->SetValueAsObject(TargetActorBBKey, NewTarget);;
+	}
 }

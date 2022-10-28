@@ -38,7 +38,7 @@ void ASPowerUp::SetPowerUpState(bool bNewIsActive)
 
 void ASPowerUp::Interact_Implementation(APawn* InstigatorPawn)
 {
-	USAttributesComponent* AttrComponent = Cast<USAttributesComponent>(InstigatorPawn->GetComponentByClass(USAttributesComponent::StaticClass()));
+	USAttributesComponent* AttrComponent = USAttributesComponent::GetAttributes(InstigatorPawn);
 	if (AttrComponent && CanBeUsed(AttrComponent))
 	{
 		ApplyEffect(AttrComponent);

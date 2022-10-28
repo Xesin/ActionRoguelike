@@ -21,11 +21,11 @@ EBTNodeResult::Type UBTTask_SelfHeal::ExecuteTask(UBehaviorTreeComponent& OwnerC
 
 		if (!ensure(AIPawn)) return EBTNodeResult::Failed;
 
-		USAttributesComponent* AttrComponent = Cast<USAttributesComponent>(AIPawn->GetComponentByClass(USAttributesComponent::StaticClass()));
+		USAttributesComponent* AttrComponent = USAttributesComponent::GetAttributes(AIPawn);
 
 		if (!ensureMsgf(AttrComponent, TEXT("No SAttributesComponent found on pawn and it is required"))) return EBTNodeResult::Failed;
 
-		AttrComponent->ApplyHealthChange(AttrComponent->GetMaxHealth());
+		AttrComponent->ApplyHealthChange(AIPawn, AttrComponent->GetMaxHealth());
 
 		return EBTNodeResult::Succeeded;
 	}

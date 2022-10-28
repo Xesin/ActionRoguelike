@@ -18,10 +18,10 @@ void ASMagicProjectile::OnActorHit(UPrimitiveComponent* PrimitiveComponent, AAct
 {
 	if (Actor && Actor != GetInstigator())
 	{
-		USAttributesComponent* Attributes = Cast<USAttributesComponent>(Actor->GetComponentByClass(USAttributesComponent::StaticClass()));
+		USAttributesComponent* Attributes = USAttributesComponent::GetAttributes(Actor);
 		if (Attributes)
 		{
-			Attributes->ApplyHealthChange(-5.f);
+			Attributes->ApplyHealthChange(GetInstigator(), - 5.f);
 
 		}
 		Super::OnActorHit(PrimitiveComponent, Actor, PrimitiveComponent1, Vector, HitResult);

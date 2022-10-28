@@ -21,7 +21,7 @@ void UBTService_CheckLowHealth::TickNode(UBehaviorTreeComponent& OwnerComp, uint
 
 		if (!ensure(AIPawn)) return;
 
-		USAttributesComponent* AttrComponent = Cast<USAttributesComponent>(AIPawn->GetComponentByClass(USAttributesComponent::StaticClass()));
+		USAttributesComponent* AttrComponent = USAttributesComponent::GetAttributes(AIPawn);
 
 		if (!ensureMsgf(AttrComponent, TEXT("No SAttributesComponent found on pawn and it is required"))) return;
 

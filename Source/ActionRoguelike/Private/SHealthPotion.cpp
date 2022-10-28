@@ -16,7 +16,7 @@ ASHealthPotion::ASHealthPotion()
 
 void ASHealthPotion::ApplyEffect(USAttributesComponent* AttComponent)
 {
-	AttComponent->ApplyHealthChange(HealthValue);
+	AttComponent->ApplyHealthChange(this, HealthValue);
 }
 
 bool ASHealthPotion::CanBeUsed(USAttributesComponent* AttComponent)
