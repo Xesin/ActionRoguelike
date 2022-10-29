@@ -18,12 +18,17 @@ public:
 
 	virtual void StartPlay() override;
 
+	virtual void OnActorKilled(AActor* VictimActor, AActor* Killer);
+
 protected:
 	UFUNCTION()
 	void BotSpawnTimerElapsed();
 
 	UFUNCTION()
 	void OnSpawnQueryCompleted(UEnvQueryInstanceBlueprintWrapper* QueryInstance, EEnvQueryStatus::Type QueryStatus);
+
+	UFUNCTION()
+	void RespawnPlayerElapsed(AController* Controller);
 
 	UFUNCTION(Exec)
 	void KillAll();

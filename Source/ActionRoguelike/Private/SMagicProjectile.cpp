@@ -8,6 +8,7 @@
 #include "Particles/ParticleSystemComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "SCharacter.h"
+#include "SGameplayFunctionLibrary.h"
 
 // Sets default values
 ASMagicProjectile::ASMagicProjectile()
@@ -19,12 +20,8 @@ void ASMagicProjectile::OnActorHit(UPrimitiveComponent* PrimitiveComponent, AAct
 {
 	if (Actor && Actor != GetInstigator())
 	{
-		USAttributesComponent* Attributes = USAttributesComponent::GetAttributes(Actor);
-		if (Attributes)
-		{
-			Attributes->ApplyHealthChange(GetInstigator(), - Damage);
+		USGameplayFunctionLibrary::ApplyDirectionalDamage(GetInstigator(), Actor, Damage, HitResult);
 
-		}
 		Super::OnActorHit(PrimitiveComponent, Actor, PrimitiveComponent1, Vector, HitResult);
 	}
 }

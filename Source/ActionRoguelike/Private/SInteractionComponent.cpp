@@ -6,37 +6,11 @@
 #include "DrawDebugHelpers.h"
 #include "SGameplayInterface.h"
 
-// Sets default values for this component's properties
-USInteractionComponent::USInteractionComponent()
-{
-	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
-	// off to improve performance if you don't need them.
-	PrimaryComponentTick.bCanEverTick = true;
-
-	// ...
-}
-
-
-// Called when the game starts
-void USInteractionComponent::BeginPlay()
-{
-	Super::BeginPlay();
-
-	// ...
-	
-}
-
-
-// Called every frame
-void USInteractionComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
-{
-	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-
-	// ...
-}
+static TAutoConsoleVariable<bool> CVarDebugDrawInteraction(TEXT("su.InteractionDebugDraw"), false, TEXT("Enable Debug Lines for Interact Component."), ECVF_Cheat);
 
 void USInteractionComponent::PrimaryInteract()
 {
+	bool bEnableDebugDraw = CVarDebugDrawInteraction.GetValueOnGameThread();
 	UWorld* World = GetWorld();
 
 	FCollisionObjectQueryParams ObjectQueryParams;
@@ -66,17 +40,17 @@ void USInteractionComponent::PrimaryInteract()
 	{
 		AActor* HitActor = Hit.GetActor();
 
+		if(bEnableDebugDraw)
+			DrawDebugSphere(World, Hit.ImpactPoint, Radius, 32, LineColor, false, 2.0f, 0.f);
+
 		if(HitActor && HitActor->Implements<USGameplayInterface>())
 		{
 			APawn* MyPawn = Cast<APawn>(MyOwner);
 			
 			ISGameplayInterface::Execute_Interact(HitActor, MyPawn);
-
+			break;
 		}
-		
-		//DrawDebugSphere(World, Hit.ImpactPoint, Radius, 32, LineColor, false, 2.0f, 0.f);
-		break;
 	}
-	
-	//DrawDebugLine(World, EyeLocation, End, LineColor, false, 2.0f, 0.f, 2.0f);
+	if(bEnableDebugDraw)
+		DrawDebugLine(World, EyeLocation, End, LineColor, false, 2.0f, 0.f, 2.0f);
 }

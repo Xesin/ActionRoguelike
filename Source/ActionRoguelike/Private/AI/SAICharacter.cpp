@@ -5,6 +5,7 @@
 #include "SAttributesComponent.h"
 #include "BrainComponent.h"
 #include "Components/CapsuleComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "Blueprint/UserWidget.h"
 #include "UI/SWorldUserWidget.h"
 
@@ -23,7 +24,6 @@ ASAICharacter::ASAICharacter()
 void ASAICharacter::OnPawnSeen(APawn* Pawn)
 {
 	SetTargetActor(Pawn);
-	DrawDebugString(GetWorld(), GetActorLocation(), "PLAYER_SPOTTED", nullptr, FColor::White, 4.f, true);
 }
 
 void ASAICharacter::OnHealthChanged(AActor* InstigatorActor, USAttributesComponent* OwningComp, float NewHealth, float Delta)
@@ -59,6 +59,7 @@ void ASAICharacter::OnHealthChanged(AActor* InstigatorActor, USAttributesCompone
 			GetMesh()->SetAllBodiesSimulatePhysics(true);
 			GetMesh()->SetCollisionProfileName("Ragdoll");
 			GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+			GetCharacterMovement()->StopMovementImmediately();
 
 			SetLifeSpan(10.f);
 		}
