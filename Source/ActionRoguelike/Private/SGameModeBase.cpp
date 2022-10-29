@@ -67,3 +67,18 @@ void ASGameModeBase::OnSpawnQueryCompleted(UEnvQueryInstanceBlueprintWrapper* Qu
 		GetWorld()->SpawnActor<AActor>(MinionClass, Locations[0], FRotator::ZeroRotator);
 	}
 }
+
+void ASGameModeBase::KillAll()
+{
+	for (TActorIterator<ASAICharacter> It(GetWorld()); It; ++It)
+	{
+		ASAICharacter* Bot = *It;
+
+		USAttributesComponent* AttrComponent = USAttributesComponent::GetAttributes(Bot);
+
+		if (ensure(AttrComponent) && AttrComponent->IsAlive())
+		{
+			AttrComponent->Kill(this); // @fixme: pass in player? for kill credit
+		}
+	}
+}

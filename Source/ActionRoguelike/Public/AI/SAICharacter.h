@@ -8,6 +8,7 @@
 
 class UPawnSensingComponent;
 class USAttributesComponent;
+class USWorldUserWidget;
 
 UCLASS()
 class ACTIONROGUELIKE_API ASAICharacter : public ACharacter
@@ -32,6 +33,9 @@ protected:
 	UPROPERTY(VisibleAnywhere, Category = "Components")
 	UPawnSensingComponent* PawnSensingComp;
 
+	UPROPERTY(EditDefaultsOnly, Category = "UI")
+	TSubclassOf<USWorldUserWidget> HealthBarWidgetClass;
+
 	UPROPERTY(EditAnywhere, Category = "BehaviorTree")
 	FName TargetActorBBKey;
 
@@ -40,4 +44,6 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	USAttributesComponent* AttributeComp;
+
+	USWorldUserWidget* ActiveHealthBar;
 };

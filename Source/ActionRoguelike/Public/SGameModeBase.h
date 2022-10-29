@@ -25,6 +25,8 @@ protected:
 	UFUNCTION()
 	void OnSpawnQueryCompleted(UEnvQueryInstanceBlueprintWrapper* QueryInstance, EEnvQueryStatus::Type QueryStatus);
 
+	UFUNCTION(Exec)
+	void KillAll();
 protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = "AI")

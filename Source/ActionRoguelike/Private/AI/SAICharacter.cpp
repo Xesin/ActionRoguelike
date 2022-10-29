@@ -5,6 +5,8 @@
 #include "SAttributesComponent.h"
 #include "BrainComponent.h"
 #include "Components/CapsuleComponent.h"
+#include "Blueprint/UserWidget.h"
+#include "UI/SWorldUserWidget.h"
 
 ASAICharacter::ASAICharacter()
 {
@@ -34,6 +36,16 @@ void ASAICharacter::OnHealthChanged(AActor* InstigatorActor, USAttributesCompone
 		{
 			SetTargetActor(InstigatorActor);
 		}
+
+		if (ActiveHealthBar == nullptr)
+		{
+			ActiveHealthBar = CreateWidget<USWorldUserWidget>(GetWorld(), HealthBarWidgetClass);
+			ActiveHealthBar->AttachedActor = this;
+			if (ActiveHealthBar)
+			{
+				ActiveHealthBar->AddToViewport();
+			}
+		}		
 
 		if (NewHealth <= 0.f)
 		{

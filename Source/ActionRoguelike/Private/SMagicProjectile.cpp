@@ -12,6 +12,7 @@
 // Sets default values
 ASMagicProjectile::ASMagicProjectile()
 {
+	Damage = 5.f;
 }
 
 void ASMagicProjectile::OnActorHit(UPrimitiveComponent* PrimitiveComponent, AActor* Actor, UPrimitiveComponent* PrimitiveComponent1, FVector Vector, const FHitResult& HitResult)
@@ -21,7 +22,7 @@ void ASMagicProjectile::OnActorHit(UPrimitiveComponent* PrimitiveComponent, AAct
 		USAttributesComponent* Attributes = USAttributesComponent::GetAttributes(Actor);
 		if (Attributes)
 		{
-			Attributes->ApplyHealthChange(GetInstigator(), - 5.f);
+			Attributes->ApplyHealthChange(GetInstigator(), - Damage);
 
 		}
 		Super::OnActorHit(PrimitiveComponent, Actor, PrimitiveComponent1, Vector, HitResult);
