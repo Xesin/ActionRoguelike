@@ -3,6 +3,7 @@
 #include "PowerUps/SPowerUp.h"
 #include "Components/SphereComponent.h"
 #include "SAttributesComponent.h"
+#include "SPlayerState.h"
 
 // Sets default values
 ASPowerUp::ASPowerUp()
@@ -13,6 +14,7 @@ ASPowerUp::ASPowerUp()
 	RootComponent = SphereComp;
 
 	RespawnTime = 10;
+	CoinCost = 0;
 }
 
 bool ASPowerUp::CanBeUsed(USAttributesComponent* AttComponent)
@@ -41,6 +43,12 @@ void ASPowerUp::Interact_Implementation(APawn* InstigatorPawn)
 	USAttributesComponent* AttrComponent = USAttributesComponent::GetAttributes(InstigatorPawn);
 	if (AttrComponent && CanBeUsed(AttrComponent))
 	{
+		ASPlayerState* PS = InstigatorPawn->GetPlayerState<ASPlayerState>();
+		if (PS)
+		{
+			if (!PS->ApplyCoinChange(-CoinCost)) return;
+		}
+
 		ApplyEffect(AttrComponent);
 
 		SetPowerUpState(false);

@@ -12,6 +12,7 @@ ASHealthPotion::ASHealthPotion()
 	
 	HealthValue = 80.f;
 	RespawnTime = 5.f;
+	CoinCost = 45;
 }
 
 void ASHealthPotion::ApplyEffect(USAttributesComponent* AttComponent)

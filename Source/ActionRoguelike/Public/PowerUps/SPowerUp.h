@@ -34,6 +34,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Powerup")
 	float RespawnTime;
 
+	UPROPERTY(EditDefaultsOnly, Category = "Powerup")
+	int32 CoinCost;
+
 	UPROPERTY(VisibleAnywhere, Category = "Components")
 	USphereComponent* SphereComp;
 

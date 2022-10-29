@@ -8,6 +8,7 @@
 #include "EngineUtils.h"
 #include "SAttributesComponent.h"
 #include "SCharacter.h"
+#include "SPlayerState.h"
 
 
 static TAutoConsoleVariable<bool> CVarSpawnBots(TEXT("su.SpawnBots"), true, TEXT("Enable spawning of bots via timer."), ECVF_Cheat);
@@ -26,6 +27,7 @@ void ASGameModeBase::StartPlay()
 
 void ASGameModeBase::OnActorKilled(AActor* VictimActor, AActor* Killer)
 {
+	UE_LOG(LogTemp, Log, TEXT("OnActorKilled: Victim: %s, Killer: %s"), *GetNameSafe(VictimActor), *GetNameSafe(Killer));
 	ASCharacter* Player = Cast<ASCharacter>(VictimActor);
 
 	if (Player)
@@ -38,8 +40,16 @@ void ASGameModeBase::OnActorKilled(AActor* VictimActor, AActor* Killer)
 		float RespawnDelay = 2.0f;
 		GetWorldTimerManager().SetTimer(TimerHandle_RespawnDelay, Delgate, RespawnDelay, false);
 	}
-
-	UE_LOG(LogTemp, Log, TEXT("OnActorKilled: Victim: %s, Killer: %s"), *GetNameSafe(VictimActor), *GetNameSafe(Killer));
+	else
+	{
+		Player = Cast<ASCharacter>(Killer);
+		if (!Player) return;
+		
+		ASPlayerState* PS = Player->GetPlayerState<ASPlayerState>();
+		if (!ensureMsgf(PS, TEXT("PlayerState is required to be ASPlayerState"))) return;
+		
+		PS->ApplyCoinChange(15);
+	}
 }
 
 void ASGameModeBase::BotSpawnTimerElapsed()
