@@ -12,5 +12,6 @@ class ACTIONROGUELIKE_API USInteractionComponent : public UActorComponent
 {
 	GENERATED_BODY()
 
+public:
 	void PrimaryInteract();		
 };
