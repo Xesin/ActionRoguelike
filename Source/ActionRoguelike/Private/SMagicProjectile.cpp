@@ -40,7 +40,7 @@ void ASMagicProjectile::OnActorOverlap(UPrimitiveComponent* OverlappedComponent,
 
 		USGameplayFunctionLibrary::ApplyDirectionalDamage(GetInstigator(), OtherActor, Damage, SweepResult);
 
-		if (EffecToApply)
+		if (ActionComp && EffecToApply)
 		{
 			ActionComp->AddAction(GetInstigator(), EffecToApply);
 		}

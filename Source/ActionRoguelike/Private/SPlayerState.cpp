@@ -16,7 +16,7 @@ void ASPlayerState::AddCoins(int32 CoinDelta)
 
 bool ASPlayerState::RemoveCoins(int32 CoinDelta)
 {
-	if (!ensure(CoinDelta > 0.0f)) return false;  // Only allows positive numbers
+	if (!ensure(CoinDelta >= 0.0f)) return false;  // Only allows positive numbers
 
 	if (NumCoins < CoinDelta) return false;
 

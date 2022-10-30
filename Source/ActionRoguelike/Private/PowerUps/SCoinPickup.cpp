@@ -10,6 +10,7 @@ ASCoinPickup::ASCoinPickup()
 	BaseMesh->SetupAttachment(RootComponent);
 
 	RespawnTime = 15.f;
+	CoinsToGive = 25;
 	CoinCost = 0;
 }
 
