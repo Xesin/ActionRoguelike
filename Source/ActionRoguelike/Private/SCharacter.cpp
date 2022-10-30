@@ -103,12 +103,19 @@ void ASCharacter::SprintStop()
 void ASCharacter::OnHealthChanged(AActor* InstigatorActor, USAttributesComponent* OwningComp, float NewHealth, float Delta)
 {
 	Super::OnHealthChanged(InstigatorActor, OwningComp, NewHealth, Delta);
-	if (NewHealth <= 0.f && Delta < 0.f)
+	if (Delta < 0.f)
 	{
-		APlayerController* PC = Cast<APlayerController>(GetController());
-		if (PC)
+		if (NewHealth <= 0.f)
 		{
-			DisableInput(PC);
+			APlayerController* PC = Cast<APlayerController>(GetController());
+			if (PC)
+			{
+				DisableInput(PC);
+			}
+		}
+		else
+		{
+			AttributeComp->ApplyRageChange(InstigatorActor, -Delta);
 		}
 	}
 }

@@ -8,7 +8,7 @@
 
 class USAttributesComponent;
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_FourParams(FOnHealthChanged, AActor*, InstigatorActor, USAttributesComponent*, OwningComp, float, NewHealth, float, Delta);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_FourParams(FOnAttributeChanged, AActor*, InstigatorActor, USAttributesComponent*, OwningComp, float, NewValue, float, Delta);
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class ACTIONROGUELIKE_API USAttributesComponent : public UActorComponent
@@ -28,17 +28,26 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Attributes")
 	bool ApplyHealthChange(AActor* InstigatorActor, float Delta);
 
-	UFUNCTION(BlueprintCallable, BlueprintPure) 
+	UFUNCTION(BlueprintCallable, Category = "Attributes")
+	bool ApplyRageChange(AActor* InstigatorActor, float Delta);
+
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Attributes")
 	bool IsAlive() const;
 
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, Category = "Attributes")
 	bool Kill(AActor* InstigatorActor);
 
-	UFUNCTION(BlueprintCallable, BlueprintPure)
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Attributes")
 	float GetMaxHealth() const;
 
-	UFUNCTION(BlueprintCallable, BlueprintPure)
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Attributes")
 	float GetHealth() const;
+
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Attributes")
+	float GetMaxRage() const;
+
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Attributes")
+	float GetRage() const;
 
 	virtual void BeginPlay() override;
 protected:
@@ -48,8 +57,17 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Attributes")
 	float HealthMax;
 
+	UPROPERTY(EditInstanceOnly, BlueprintReadWrite, Category = "Attributes")
+	float Rage;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Attributes")
+	float RageMax;
+
 public:
 	UPROPERTY(BlueprintAssignable)
-	FOnHealthChanged OnHealthChanged;
+	FOnAttributeChanged OnHealthChanged;
+
+	UPROPERTY(BlueprintAssignable)
+	FOnAttributeChanged OnRageChanged;
 
 };

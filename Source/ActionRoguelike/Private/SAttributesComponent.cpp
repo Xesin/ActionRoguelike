@@ -3,6 +3,16 @@
 #include "SGameModeBase.h"
 
 static TAutoConsoleVariable<float> CVarDamageMultiplier(TEXT("su.DamageMutliplier"), 1.0f, TEXT("Global Damage Modifier for Attribute Component."), ECVF_Cheat);
+static TAutoConsoleVariable<float> CVarRageMultiplier(TEXT("su.RageGainMultiplier"), 1.0f, TEXT("Global Rage Modifier for Attribute Component."), ECVF_Cheat);
+
+USAttributesComponent::USAttributesComponent()
+{
+	PrimaryComponentTick.bCanEverTick = false;
+	HealthMax = 100;
+	Health = HealthMax;
+	Rage = 0;
+	RageMax = 200;
+}
 
 USAttributesComponent* USAttributesComponent::GetAttributes(AActor* FromActor)
 {
@@ -24,15 +34,6 @@ bool USAttributesComponent::IsActorAlive(AActor* FromActor)
 
 	return false;
 }
-
-USAttributesComponent::USAttributesComponent()
-{
-	PrimaryComponentTick.bCanEverTick = false;
-	HealthMax = 100;
-	Health = HealthMax;
-}
-
-
 
 bool USAttributesComponent::ApplyHealthChange(AActor* InstigatorActor, float Delta)
 {
@@ -63,6 +64,24 @@ bool USAttributesComponent::ApplyHealthChange(AActor* InstigatorActor, float Del
 	return true;
 }
 
+bool USAttributesComponent::ApplyRageChange(AActor* InstigatorActor, float Delta)
+{
+	if (Delta < 0.0f)
+	{
+		float RageMultiplier = CVarRageMultiplier.GetValueOnGameThread();
+		Delta *= RageMultiplier;
+	}
+
+	float OldRage = Rage;
+
+	Rage = FMath::Clamp(Rage += Delta, 0, RageMax);
+
+	float ActualDelta = Rage - OldRage;
+	OnRageChanged.Broadcast(InstigatorActor, this, Rage, Delta);
+
+	return true;
+}
+
 bool USAttributesComponent::IsAlive() const
 {
 	return Health > 0.f;
@@ -76,6 +95,16 @@ bool USAttributesComponent::Kill(AActor* InstigatorActor)
 float USAttributesComponent::GetHealth() const
 {
 	return Health;
+}
+
+float USAttributesComponent::GetMaxRage() const
+{
+	return RageMax;
+}
+
+float USAttributesComponent::GetRage() const
+{
+	return Rage;
 }
 
 void USAttributesComponent::BeginPlay()
