@@ -15,7 +15,7 @@ ASHealthPotion::ASHealthPotion()
 	CoinCost = 45;
 }
 
-void ASHealthPotion::ApplyEffect(USAttributesComponent* AttComponent)
+void ASHealthPotion::ApplyEffect(APawn* InstigatorPawn, USAttributesComponent* AttComponent)
 {
 	AttComponent->ApplyHealthChange(this, HealthValue);
 }

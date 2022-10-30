@@ -16,6 +16,8 @@ static TAutoConsoleVariable<bool> CVarSpawnBots(TEXT("su.SpawnBots"), true, TEXT
 ASGameModeBase::ASGameModeBase()
 {
 	SpawnInterval = 2.f;
+
+	PlayerStateClass = ASPlayerState::StaticClass();
 }
 
 void ASGameModeBase::StartPlay()
@@ -48,7 +50,7 @@ void ASGameModeBase::OnActorKilled(AActor* VictimActor, AActor* Killer)
 		ASPlayerState* PS = Player->GetPlayerState<ASPlayerState>();
 		if (!ensureMsgf(PS, TEXT("PlayerState is required to be ASPlayerState"))) return;
 		
-		PS->ApplyCoinChange(15);
+		PS->AddCoins(15);
 	}
 }
 

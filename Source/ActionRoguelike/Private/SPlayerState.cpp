@@ -3,16 +3,25 @@
 
 #include "SPlayerState.h"
 
-bool ASPlayerState::ApplyCoinChange(int32 Delta)
+void ASPlayerState::AddCoins(int32 CoinDelta)
 {
-	if (Delta < 0 && NumCoins < Delta) return false;
+	if (!ensure(CoinDelta > 0.0f))return; // Only allows positive numbers
 
 	int32 OldCoins = NumCoins;
 
-	NumCoins = FMath::Clamp(NumCoins += Delta, 0, TNumericLimits<int32>::Max());
+	NumCoins = FMath::Clamp(NumCoins += CoinDelta, 0, TNumericLimits<int32>::Max());
 
-	OnCoinsChanged.Broadcast(NumCoins, Delta);
+	OnCoinsChanged.Broadcast(NumCoins, CoinDelta);
+}
 
+bool ASPlayerState::RemoveCoins(int32 CoinDelta)
+{
+	if (!ensure(CoinDelta > 0.0f)) return false;  // Only allows positive numbers
+
+	if (NumCoins < CoinDelta) return false;
+
+	NumCoins = NumCoins -= CoinDelta;
+	OnCoinsChanged.Broadcast(NumCoins, CoinDelta);
 	return true;
 }
 

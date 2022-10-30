@@ -15,15 +15,18 @@ class ACTIONROGUELIKE_API ASPlayerState : public APlayerState
 
 public:
 	UFUNCTION(BlueprintCallable, Category = "Economy")
-	bool ApplyCoinChange(int32 CoinChange);
+	void AddCoins(int32 CoinDelta);
 
-	UFUNCTION(BlueprintPure, Category = "Economy")
+	UFUNCTION(BlueprintCallable, Category = "Economy")
+	bool RemoveCoins(int32 CoinDelta);
+
+	UFUNCTION(BlueprintCallable, Category = "Economy")
 	int32 GetNumCoins() const;
+
+	UPROPERTY(BlueprintAssignable, Category = "Economy")
+	FOnCoinsChanged OnCoinsChanged;
 
 protected:
 	UPROPERTY(BlueprintReadOnly, Category = "Economy")
 	int32 NumCoins;
-
-	UPROPERTY(BlueprintAssignable, Category = "Economy")
-	FOnCoinsChanged OnCoinsChanged;
 };

@@ -22,7 +22,7 @@ public:
 protected:
 	virtual bool CanBeUsed(USAttributesComponent* AttComponent);
 	
-	virtual void ApplyEffect(USAttributesComponent* AttComponent);
+	virtual void ApplyEffect(APawn* InstigatorPawn, USAttributesComponent* AttComponent);
 
 	void ShowPowerup();
 

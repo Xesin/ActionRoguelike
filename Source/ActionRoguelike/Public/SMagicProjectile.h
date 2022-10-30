@@ -7,6 +7,7 @@
 #include "Components/SphereComponent.h"
 #include "GameFramework/Actor.h"
 #include "GameplayTagContainer.h"
+#include "AAS/SAction_Effect.h"
 #include "SMagicProjectile.generated.h"
 
 class UParticleSystemComponent;
@@ -31,4 +32,7 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Damage")
 	FGameplayTag ParryTag;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Damage")
+	TSubclassOf<USAction_Effect> EffecToApply;
 };

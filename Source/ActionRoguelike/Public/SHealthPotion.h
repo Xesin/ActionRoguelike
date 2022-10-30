@@ -19,7 +19,7 @@ public:
 	ASHealthPotion();
 
 protected:
-	void ApplyEffect(USAttributesComponent* AttComponent) override;
+	void ApplyEffect(APawn* InstigatorPawn, USAttributesComponent* AttComponent) override;
 
 	bool CanBeUsed(USAttributesComponent* AttComponent) override;
 protected:

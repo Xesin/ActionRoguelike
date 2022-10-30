@@ -22,7 +22,7 @@ bool ASPowerUp::CanBeUsed(USAttributesComponent* AttComponent)
 	return true;
 }
 
-void ASPowerUp::ApplyEffect(USAttributesComponent* AttComponent)
+void ASPowerUp::ApplyEffect(APawn* InstigatorPawn, USAttributesComponent* AttComponent)
 {
 }
 
@@ -46,10 +46,10 @@ void ASPowerUp::Interact_Implementation(APawn* InstigatorPawn)
 		ASPlayerState* PS = InstigatorPawn->GetPlayerState<ASPlayerState>();
 		if (PS)
 		{
-			if (!PS->ApplyCoinChange(-CoinCost)) return;
+			if (!PS->RemoveCoins(CoinCost)) return;
 		}
 
-		ApplyEffect(AttrComponent);
+		ApplyEffect(InstigatorPawn, AttrComponent);
 
 		SetPowerUpState(false);
 

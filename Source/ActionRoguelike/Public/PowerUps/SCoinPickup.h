@@ -17,7 +17,11 @@ class ACTIONROGUELIKE_API ASCoinPickup : public ASPowerUp
 public:
 	ASCoinPickup();
 
+	virtual void ApplyEffect(APawn* InstigatorPawn, USAttributesComponent* AttComponent) override;
 protected:
 	UPROPERTY(VisibleAnywhere, Category = "Copmponents")
 	UStaticMeshComponent* BaseMesh;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Economy")
+	uint32 CoinsToGive;
 };

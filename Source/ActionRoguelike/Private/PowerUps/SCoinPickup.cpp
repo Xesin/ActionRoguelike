@@ -2,6 +2,7 @@
 
 
 #include "PowerUps/SCoinPickup.h"
+#include "SPlayerState.h"
 
 ASCoinPickup::ASCoinPickup()
 {
@@ -9,5 +10,16 @@ ASCoinPickup::ASCoinPickup()
 	BaseMesh->SetupAttachment(RootComponent);
 
 	RespawnTime = 15.f;
-	CoinCost = -45;
+	CoinCost = 0;
+}
+
+void ASCoinPickup::ApplyEffect(APawn* InstigatorPawn, USAttributesComponent* AttComponent)
+{
+	Super::ApplyEffect(InstigatorPawn, AttComponent);
+	ASPlayerState* PS = InstigatorPawn->GetPlayerState<ASPlayerState>();
+	if (PS)
+	{
+		PS->AddCoins(CoinsToGive);
+	}
+
 }
