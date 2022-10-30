@@ -14,11 +14,7 @@ ASAICharacter::ASAICharacter()
 	PawnSensingComp = CreateDefaultSubobject<UPawnSensingComponent>("PawnSensingComp");
 	TargetActorBBKey = "TargetActor";
 
-	AttributeComp = CreateDefaultSubobject<USAttributesComponent>("AttributeComp");
-
 	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
-
-	HitFlashParamName = "TimeToHit";
 }
 
 void ASAICharacter::OnPawnSeen(APawn* Pawn)
@@ -28,10 +24,10 @@ void ASAICharacter::OnPawnSeen(APawn* Pawn)
 
 void ASAICharacter::OnHealthChanged(AActor* InstigatorActor, USAttributesComponent* OwningComp, float NewHealth, float Delta)
 {
+	Super::OnHealthChanged(InstigatorActor, OwningComp, NewHealth, Delta);
+
 	if (Delta < 0.0)
 	{
-		GetMesh()->SetScalarParameterValueOnMaterials(HitFlashParamName, GetWorld()->TimeSeconds);
-
 		if (InstigatorActor != this)
 		{
 			SetTargetActor(InstigatorActor);

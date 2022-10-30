@@ -2,7 +2,7 @@
 
 
 #include "AAS/SAction_ProjectileAttack.h"
-#include "SCharacter.h"
+#include "SBaseCharacter.h"
 #include "Kismet/GameplayStatics.h"
 #include "Engine/World.h"
 
@@ -19,7 +19,7 @@ void USAction_ProjectileAttack::StartAction_Implementation(AActor* Instigator)
 	if (TimerHandle_MontageAnimation.IsValid()) return;
 
 
-	ASCharacter* Character = Cast<ASCharacter>(Instigator);
+	ASBaseCharacter* Character = Cast<ASBaseCharacter>(Instigator);
 
 	if (!Character) return;
 
@@ -70,12 +70,6 @@ void USAction_ProjectileAttack::AttackDelay_Elapsed(ACharacter* InstigatorCharac
 		if (GetWorld()->SweepSingleByObjectType(Hit, TraceStart, TraceEnd, FQuat::Identity, ObjParams, Shape, Params))
 		{
 			TraceEnd = Hit.ImpactPoint;
-
-			DrawDebugLine(GetWorld(), TraceStart, TraceEnd, FColor::Green, false, 3.f);
-		}
-		else
-		{
-			DrawDebugLine(GetWorld(), TraceStart, TraceEnd, FColor::Red, false, 3.f);
 		}
 
 		FRotator ProjRotation = FRotationMatrix::MakeFromX(TraceEnd - HandLocation).Rotator();

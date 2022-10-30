@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Character.h"
+#include "SBaseCharacter.h"
 #include "SAICharacter.generated.h"
 
 class UPawnSensingComponent;
@@ -11,7 +11,7 @@ class USAttributesComponent;
 class USWorldUserWidget;
 
 UCLASS()
-class ACTIONROGUELIKE_API ASAICharacter : public ACharacter
+class ACTIONROGUELIKE_API ASAICharacter : public ASBaseCharacter
 {
 	GENERATED_BODY()
 
@@ -23,8 +23,7 @@ protected:
 	UFUNCTION()
 	void OnPawnSeen(APawn* Pawn);
 
-	UFUNCTION()
-	void OnHealthChanged(AActor* InstigatorActor, USAttributesComponent* OwningComp, float NewHealth, float Delta);
+	void OnHealthChanged(AActor* InstigatorActor, USAttributesComponent* OwningComp, float NewHealth, float Delta) override;
 
 	virtual void PostInitializeComponents() override;
 
@@ -38,12 +37,6 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = "BehaviorTree")
 	FName TargetActorBBKey;
-
-	UPROPERTY(VisibleAnywhere, Category = "FX")
-	FName HitFlashParamName;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	USAttributesComponent* AttributeComp;
 
 	USWorldUserWidget* ActiveHealthBar;
 };

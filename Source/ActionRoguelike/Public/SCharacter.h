@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Character.h"
+#include "SBaseCharacter.h"
 #include "SCharacter.generated.h"
 
 class UCameraComponent;
@@ -14,7 +14,7 @@ class USAttributesComponent;
 class USActionComponent;
 
 UCLASS()
-class ACTIONROGUELIKE_API ASCharacter : public ACharacter
+class ACTIONROGUELIKE_API ASCharacter : public ASBaseCharacter
 {
 	GENERATED_BODY()
 
@@ -29,6 +29,8 @@ protected:
 	virtual void PostInitializeComponents() override;
 
 	virtual FVector GetPawnViewLocation() const override;
+
+	virtual void OnHealthChanged(AActor* InstigatorActor, USAttributesComponent* OwningComp, float NewHealth, float Delta) override;
 
 	UFUNCTION()
 	void MoveForward(float value);
@@ -54,8 +56,7 @@ protected:
 	UFUNCTION()
 	void SprintStop();
 
-	UFUNCTION()
-	virtual void OnHealthChanged(AActor* InstigatorActor, USAttributesComponent* OwningComp, float NewHealth, float Delta);
+
 
 	UFUNCTION(Exec)
 	void HealSelf(float Amount = 100);
@@ -73,10 +74,4 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, Category = "Components")
 	USInteractionComponent* InteractionComp;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
-	USAttributesComponent* AttributeComp;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
-	USActionComponent* ActionComp;	
 };

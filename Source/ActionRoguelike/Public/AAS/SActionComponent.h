@@ -17,6 +17,9 @@ class ACTIONROGUELIKE_API USActionComponent : public UActorComponent
 public:	
 	USActionComponent();	
 
+	UFUNCTION(BlueprintCallable, Category = "Attributes")
+	static USActionComponent* GetActions(AActor* FromActor);
+
 	virtual void BeginPlay() override;
 
 	virtual void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;

@@ -9,6 +9,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "SCharacter.h"
 #include "SGameplayFunctionLibrary.h"
+#include "AAS/SActionComponent.h"
 
 // Sets default values
 ASMagicProjectile::ASMagicProjectile()
@@ -16,13 +17,30 @@ ASMagicProjectile::ASMagicProjectile()
 	Damage = 5.f;
 }
 
-void ASMagicProjectile::OnActorHit(UPrimitiveComponent* PrimitiveComponent, AActor* Actor, UPrimitiveComponent* PrimitiveComponent1, FVector Vector, const FHitResult& HitResult)
+void ASMagicProjectile::OnActorOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (Actor && Actor != GetInstigator())
+	if (OtherActor && OtherActor != GetInstigator())
 	{
-		USGameplayFunctionLibrary::ApplyDirectionalDamage(GetInstigator(), Actor, Damage, HitResult);
+		USActionComponent* ActionComp = USActionComponent::GetActions(OtherActor);
 
-		Super::OnActorHit(PrimitiveComponent, Actor, PrimitiveComponent1, Vector, HitResult);
+		if (ActionComp && ActionComp->ActiveGameplayTags.HasTag(ParryTag))
+		{
+			MovementComp->Velocity = -MovementComp->Velocity;
+
+			APawn* OtherPawn = Cast<APawn>(OtherActor);
+			if (OtherPawn) 
+			{
+				SphereComp->IgnoreActorWhenMoving(GetInstigator(), false);
+				SphereComp->IgnoreActorWhenMoving(OtherActor, true);
+				SetInstigator(OtherPawn);
+			}
+
+			return;
+		}
+
+		USGameplayFunctionLibrary::ApplyDirectionalDamage(GetInstigator(), OtherActor, Damage, SweepResult);
+
+		Super::OnActorOverlap(OverlappedComponent, OtherActor, OtherComp, OtherBodyIndex, bFromSweep, SweepResult);
 	}
 }
 

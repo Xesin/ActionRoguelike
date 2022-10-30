@@ -6,6 +6,7 @@
 #include "SBaseProjectile.h"
 #include "Components/SphereComponent.h"
 #include "GameFramework/Actor.h"
+#include "GameplayTagContainer.h"
 #include "SMagicProjectile.generated.h"
 
 class UParticleSystemComponent;
@@ -22,10 +23,12 @@ public:
 	ASMagicProjectile();
 
 protected:
-	UFUNCTION()
-	void OnActorHit(UPrimitiveComponent* PrimitiveComponent, AActor* Actor, UPrimitiveComponent* PrimitiveComponent1, FVector Vector, const FHitResult& HitResult) override;
+	void OnActorOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) override;
 
 protected:
-	UPROPERTY(EditDefaultsOnly, Category = "Projectile")
+	UPROPERTY(EditDefaultsOnly, Category = "Damage")
 	float Damage;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Damage")
+	FGameplayTag ParryTag;
 };

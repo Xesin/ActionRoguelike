@@ -17,7 +17,7 @@ ASBaseProjectile::ASBaseProjectile()
 
 	SphereComp = CreateDefaultSubobject<USphereComponent>("SphereComp");
 	SphereComp->SetCollisionProfileName("Projectile");
-	SphereComp->OnComponentHit.AddDynamic(this, &ASBaseProjectile::OnActorHit);
+	SphereComp->OnComponentBeginOverlap.AddDynamic(this, &ASBaseProjectile::OnActorOverlap);
 	
 	RootComponent = SphereComp;	
 	
@@ -39,11 +39,6 @@ ASBaseProjectile::ASBaseProjectile()
 	ShakeFalloff = 1;
 }
 
-void ASBaseProjectile::OnActorHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
-{
-	Explode();
-}
-
 void ASBaseProjectile::Explode_Implementation()
 {
 	if (ensure(!IsPendingKill()))
@@ -58,6 +53,11 @@ void ASBaseProjectile::Explode_Implementation()
 
 		Destroy();
 	}
+}
+
+void ASBaseProjectile::OnActorOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	Explode();
 }
 
 void ASBaseProjectile::BeginPlay()

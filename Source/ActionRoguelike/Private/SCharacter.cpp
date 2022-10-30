@@ -29,9 +29,6 @@ ASCharacter::ASCharacter()
 	InteractionComp = CreateDefaultSubobject<USInteractionComponent>("InteractionComp");
 
 	GetCharacterMovement()->bOrientRotationToMovement = true;
-
-	AttributeComp = CreateDefaultSubobject<USAttributesComponent>("AttributeComp");
-	ActionComp = CreateDefaultSubobject<USActionComponent>("ActionComp");
 }
 
 // Called when the game starts or when spawned
@@ -105,11 +102,7 @@ void ASCharacter::SprintStop()
 
 void ASCharacter::OnHealthChanged(AActor* InstigatorActor, USAttributesComponent* OwningComp, float NewHealth, float Delta)
 {
-	if (Delta < 0.0)
-	{
-		GetMesh()->SetScalarParameterValueOnMaterials("TimeToHit", GetWorld()->TimeSeconds);
-	}
-
+	Super::OnHealthChanged(InstigatorActor, OwningComp, NewHealth, Delta);
 	if (NewHealth <= 0.f && Delta < 0.f)
 	{
 		APlayerController* PC = Cast<APlayerController>(GetController());

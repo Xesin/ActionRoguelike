@@ -9,6 +9,16 @@ USActionComponent::USActionComponent()
 	PrimaryComponentTick.bCanEverTick = true;
 }
 
+USActionComponent* USActionComponent::GetActions(AActor* FromActor)
+{
+	USActionComponent* Comp = Cast<USActionComponent>(FromActor->GetComponentByClass(USActionComponent::StaticClass()));
+	if (Comp)
+	{
+		return Comp;
+	}
+	return nullptr;
+}
+
 void USActionComponent::BeginPlay()
 {
 	Super::BeginPlay();
