@@ -4,7 +4,7 @@
 #include "SGameplayFunctionLibrary.h"
 #include "SAttributesComponent.h"
 
-static TAutoConsoleVariable<float> CVarHitForce(TEXT("su.HitForce"), 300000.f, TEXT("Force applied by projectiles on hit."), ECVF_Cheat);
+static TAutoConsoleVariable<float> CVarHitForce(TEXT("su.HitForceMultiplier"), 1.f, TEXT("Force applied by projectiles on hit."), ECVF_Cheat);
 
 bool USGameplayFunctionLibrary::ApplyDamage(AActor* DamageCauser, AActor* TargetActor, float DamageAmount)
 {
@@ -23,7 +23,10 @@ bool USGameplayFunctionLibrary::ApplyDirectionalDamage(AActor* DamageCauser, AAc
 		UPrimitiveComponent* HitComp = HitResult.GetComponent();
 		if (HitComp && HitComp->IsSimulatingPhysics(HitResult.BoneName))
 		{
-			HitComp->AddImpulseAtLocation(-HitResult.ImpactNormal * CVarHitForce.GetValueOnGameThread(), HitResult.ImpactPoint, HitResult.BoneName);
+			FVector Direction = HitResult.TraceEnd - HitResult.TraceStart;
+			Direction.Normalize();
+
+			HitComp->AddImpulseAtLocation(Direction * (300000.f * CVarHitForce.GetValueOnGameThread()), HitResult.ImpactPoint, HitResult.BoneName);
 		}
 
 		return true;

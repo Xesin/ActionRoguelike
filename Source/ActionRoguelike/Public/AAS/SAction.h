@@ -4,7 +4,10 @@
 
 #include "CoreMinimal.h"
 #include "UObject/NoExportTypes.h"
+#include "GameplayTagContainer.h"
 #include "SAction.generated.h"
+
+class USActionComponent;
 
 UCLASS(Blueprintable)
 class ACTIONROGUELIKE_API USAction : public UObject
@@ -18,9 +21,28 @@ public:
 	UFUNCTION(BlueprintNativeEvent, Category = "Action")
 	void StopAction(AActor* Instigator);
 
+	UFUNCTION(BlueprintNativeEvent, Category = "Action")
+	bool CanStart(AActor* Instigator);
+
+	UFUNCTION(BlueprintCallable, Category = "Action")
+	bool IsRunning() const;
+
 	UWorld* GetWorld() const override;
+
+protected:
+	UFUNCTION(BlueprintCallable, Category = "Action")
+	USActionComponent* GetOwningComponent() const;
 
 public:
 	UPROPERTY(EditDefaultsOnly, Category = "Action")
 	FName ActionName;
+
+protected:
+	bool bIsRunning;
+
+	UPROPERTY(EditDefaultsOnly,Category = "Tags")
+	FGameplayTagContainer GrantTags;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Tags")
+	FGameplayTagContainer BlockedTags;
 };

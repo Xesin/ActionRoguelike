@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "GameplayTagContainer.h"
 #include "SActionComponent.generated.h"
 
 class USAction;
@@ -18,6 +19,8 @@ public:
 
 	virtual void BeginPlay() override;
 
+	virtual void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+
 	UFUNCTION(BLueprintCallable, Category = "Actions")
 	void AddAction(TSubclassOf<USAction> ActionClass);
 
@@ -27,7 +30,13 @@ public:
 	UFUNCTION(BLueprintCallable, Category = "Actions")
 	bool StopActionByName(AActor* Instigator, FName ActionName);
 
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Tags")
+	FGameplayTagContainer ActiveGameplayTags;
+
 protected:
+
 	UPROPERTY()
 	TArray<USAction*> Actions;
 
