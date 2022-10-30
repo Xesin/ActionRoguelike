@@ -32,6 +32,8 @@ ASCharacter::ASCharacter()
 
 	AttributeComp = CreateDefaultSubobject<USAttributesComponent>("AttributeComp");
 	ActionComp = CreateDefaultSubobject<USActionComponent>("ActionComp");
+
+	PrimaryCastSocket = "Muzzle_01";
 }
 
 // Called when the game starts or when spawned

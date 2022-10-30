@@ -78,5 +78,9 @@ protected:
 	USAttributesComponent* AttributeComp;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
-	USActionComponent* ActionComp;	
+	USActionComponent* ActionComp;
+
+	UPROPERTY(VisibleAnywhere, Category = "Effects")
+	FName PrimaryCastSocket;
+	
 };

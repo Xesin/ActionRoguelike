@@ -29,6 +29,7 @@ USAttributesComponent::USAttributesComponent()
 {
 	PrimaryComponentTick.bCanEverTick = false;
 	HealthMax = 100;
+	Health = HealthMax;
 }
 
 
