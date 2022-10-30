@@ -18,9 +18,9 @@ public:
 
 	USAction_Effect();
 
-	void StartAction_Implementation(AActor* Instigator) override;
+	virtual void StartAction_Implementation(AActor* Instigator) override;
 
-	void StopAction_Implementation(AActor* Instigator) override;
+	virtual void StopAction_Implementation(AActor* Instigator) override;
 
 protected:
 	UFUNCTION(BlueprintNativeEvent, Category = "Effect")
