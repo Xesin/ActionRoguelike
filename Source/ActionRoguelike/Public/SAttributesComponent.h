@@ -25,6 +25,8 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Attributes", meta = (DisplayName = "IsAlive"))
 	static bool IsActorAlive(AActor* FromActor);
 
+	virtual void BeginPlay() override;
+
 	UFUNCTION(BlueprintCallable, Category = "Attributes")
 	bool ApplyHealthChange(AActor* InstigatorActor, float Delta);
 
@@ -49,18 +51,20 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Attributes")
 	float GetRage() const;
 
-	virtual void BeginPlay() override;
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastHealthChanged(AActor* InstigatorActor, float NewHealth, float Delta);
+
 protected:
-	UPROPERTY(EditInstanceOnly, BlueprintReadWrite, Category = "Attributes")
+	UPROPERTY(EditInstanceOnly, BlueprintReadWrite, Replicated, Category = "Attributes")
 	float Health;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Attributes")
+	UPROPERTY(EditDefaultsOnly, Replicated, Category = "Attributes")
 	float HealthMax;
 
-	UPROPERTY(EditInstanceOnly, BlueprintReadWrite, Category = "Attributes")
+	UPROPERTY(EditInstanceOnly, BlueprintReadWrite, Replicated, Category = "Attributes")
 	float Rage;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Attributes")
+	UPROPERTY(EditDefaultsOnly, Replicated, Category = "Attributes")
 	float RageMax;
 
 public:

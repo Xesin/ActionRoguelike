@@ -37,6 +37,8 @@ ASBaseProjectile::ASBaseProjectile()
 	ShakeInnerRadius = 50.f;
 	ShakeOuterRadius = 300.f;
 	ShakeFalloff = 1;
+
+	SetReplicates(true);
 }
 
 void ASBaseProjectile::Explode_Implementation()

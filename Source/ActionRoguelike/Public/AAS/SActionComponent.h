@@ -37,6 +37,10 @@ public:
 	UFUNCTION(BLueprintCallable, Category = "Actions")
 	bool StopActionByName(AActor* Instigator, FName ActionName);
 
+protected:
+
+	UFUNCTION(Server, Reliable)
+	void ServerStartAction(AActor* Instigator, FName ActionName);
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Tags")

@@ -17,14 +17,14 @@ protected:
 	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
 
 public:
-	UPROPERTY(BlueprintReadOnly, Category = "UI")
+	UPROPERTY(BlueprintReadOnly, Category = "UI", meta = (ExposeOnSpawn = true))
 	AActor* AttachedActor;
 
 protected:
 	UPROPERTY(meta = (BindWidget))
 	USizeBox* ParentSizeBox;
 
-	UPROPERTY(EditAnywhere, Category = "UI")
+	UPROPERTY(EditDefaultsOnly, Category = "UI")
 	FVector WorldOffset;
 
 };

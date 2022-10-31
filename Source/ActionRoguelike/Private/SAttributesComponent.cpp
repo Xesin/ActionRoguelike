@@ -1,6 +1,7 @@
 
 #include "SAttributesComponent.h"
 #include "SGameModeBase.h"
+#include "Net/UnrealNetwork.h"
 
 static TAutoConsoleVariable<float> CVarDamageMultiplier(TEXT("su.DamageMutliplier"), 1.0f, TEXT("Global Damage Modifier for Attribute Component."), ECVF_Cheat);
 static TAutoConsoleVariable<float> CVarRageMultiplier(TEXT("su.RageGainMultiplier"), 1.0f, TEXT("Global Rage Modifier for Attribute Component."), ECVF_Cheat);
@@ -12,6 +13,8 @@ USAttributesComponent::USAttributesComponent()
 	Health = HealthMax;
 	Rage = 0;
 	RageMax = 200;
+
+	SetIsReplicatedByDefault(true);
 }
 
 USAttributesComponent* USAttributesComponent::GetAttributes(AActor* FromActor)
@@ -52,6 +55,8 @@ bool USAttributesComponent::ApplyHealthChange(AActor* InstigatorActor, float Del
 	float ActualDelta = Health - OldHealth;
 	OnHealthChanged.Broadcast(InstigatorActor, this, Health, Delta);
 	
+	MulticastHealthChanged(InstigatorActor, Health, Delta);
+
 	if (ActualDelta < 0.f && !IsAlive())
 	{
 		ASGameModeBase* GM = GetWorld()->GetAuthGameMode<ASGameModeBase>();
@@ -107,6 +112,11 @@ float USAttributesComponent::GetRage() const
 	return Rage;
 }
 
+void USAttributesComponent::MulticastHealthChanged_Implementation(AActor* InstigatorActor, float NewHealth, float Delta)
+{
+	OnHealthChanged.Broadcast(InstigatorActor, this, NewHealth, Delta);
+}
+
 void USAttributesComponent::BeginPlay()
 {
 	Super::BeginPlay();
@@ -117,4 +127,12 @@ void USAttributesComponent::BeginPlay()
 float USAttributesComponent::GetMaxHealth() const
 {
 	return HealthMax;
+}
+
+void USAttributesComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	DOREPLIFETIME(USAttributesComponent, Health);
+	DOREPLIFETIME(USAttributesComponent, HealthMax);
+	DOREPLIFETIME(USAttributesComponent, Rage);
+	DOREPLIFETIME(USAttributesComponent, RageMax);
 }

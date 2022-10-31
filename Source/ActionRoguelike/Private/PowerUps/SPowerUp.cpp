@@ -15,6 +15,8 @@ ASPowerUp::ASPowerUp()
 
 	RespawnTime = 10;
 	CoinCost = 0;
+
+	SetReplicates(true);
 }
 
 bool ASPowerUp::CanBeUsed(USAttributesComponent* AttComponent)

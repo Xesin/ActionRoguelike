@@ -23,6 +23,9 @@ protected:
 
 	void FindBestInteractable();
 
+	UFUNCTION(Server, Reliable)
+	void ServerInteract(AActor* InFocus);
+
 protected:
 	UPROPERTY()
 	AActor* FocusedActor;
