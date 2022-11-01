@@ -55,7 +55,7 @@ bool USAttributesComponent::ApplyHealthChange(AActor* InstigatorActor, float Del
 	float ActualDelta = Health - OldHealth;
 	OnHealthChanged.Broadcast(InstigatorActor, this, Health, Delta);
 	
-	MulticastHealthChanged(InstigatorActor, Health, Delta);
+	NetMulticastHealthChanged(InstigatorActor, Health, Delta);
 
 	if (ActualDelta < 0.f && !IsAlive())
 	{
@@ -83,6 +83,8 @@ bool USAttributesComponent::ApplyRageChange(AActor* InstigatorActor, float Delta
 
 	float ActualDelta = Rage - OldRage;
 	OnRageChanged.Broadcast(InstigatorActor, this, Rage, Delta);
+
+	NetMulticastRageChanged(InstigatorActor, Rage, Delta);
 
 	return true;
 }
@@ -112,9 +114,14 @@ float USAttributesComponent::GetRage() const
 	return Rage;
 }
 
-void USAttributesComponent::MulticastHealthChanged_Implementation(AActor* InstigatorActor, float NewHealth, float Delta)
+void USAttributesComponent::NetMulticastHealthChanged_Implementation(AActor* InstigatorActor, float NewHealth, float Delta)
 {
 	OnHealthChanged.Broadcast(InstigatorActor, this, NewHealth, Delta);
+}
+
+void USAttributesComponent::NetMulticastRageChanged_Implementation(AActor* InstigatorActor, float NewRage, float Delta)
+{
+	OnRageChanged.Broadcast(InstigatorActor, this, NewRage, Delta);
 }
 
 void USAttributesComponent::BeginPlay()

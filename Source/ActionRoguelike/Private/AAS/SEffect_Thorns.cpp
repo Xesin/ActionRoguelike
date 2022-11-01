@@ -35,6 +35,10 @@ void USEffect_Thorns::OnHealthChanged(AActor* InstigatorActor, USAttributesCompo
 {
 	if (Delta < 0.0f && InstigatorActor != OwningComp->GetOwner())
 	{
-		USGameplayFunctionLibrary::ApplyDamage(GetOwningComponent()->GetOwner(), InstigatorActor, -Delta * DeflectedPercentage);
+		int32 ReflectedAmount = FMath::RoundToInt32(Delta * DeflectedPercentage);
+
+		if (ReflectedAmount == 0) return;
+
+		USGameplayFunctionLibrary::ApplyDamage(GetOwningComponent()->GetOwner(), InstigatorActor, -ReflectedAmount);
 	}
 }

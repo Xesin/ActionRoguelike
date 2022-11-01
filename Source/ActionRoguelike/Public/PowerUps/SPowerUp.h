@@ -24,11 +24,17 @@ protected:
 	
 	virtual void ApplyEffect(APawn* InstigatorPawn, USAttributesComponent* AttComponent);
 
+	UFUNCTION(NetMulticast, Unreliable)
+	virtual void NetMulticast_ExecuteUsageVFX(APawn* InstigatorPawn);
+
 	void ShowPowerup();
 
 	void SetPowerUpState(bool bNewIsActive);
 
 	void Interact_Implementation(APawn* InstigatorPawn) override;
+
+	UFUNCTION()
+	void OnRep_IsVisible();
 
 protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Powerup")
@@ -39,6 +45,9 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, Category = "Components")
 	USphereComponent* SphereComp;
+
+	UPROPERTY(ReplicatedUsing = OnRep_IsVisible)
+	bool bIsVisible;
 
 	FTimerHandle TimerHandle_Respawn;
 };

@@ -52,7 +52,10 @@ public:
 	float GetRage() const;
 
 	UFUNCTION(NetMulticast, Reliable)
-	void MulticastHealthChanged(AActor* InstigatorActor, float NewHealth, float Delta);
+	void NetMulticastHealthChanged(AActor* InstigatorActor, float NewHealth, float Delta);
+
+	UFUNCTION(NetMulticast, Unreliable)
+	void NetMulticastRageChanged(AActor* InstigatorActor, float NewRage, float Delta);
 
 protected:
 	UPROPERTY(EditInstanceOnly, BlueprintReadWrite, Replicated, Category = "Attributes")

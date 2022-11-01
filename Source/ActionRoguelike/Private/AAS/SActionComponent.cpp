@@ -4,6 +4,9 @@
 #include "AAS/SActionComponent.h"
 #include "AAS/SAction.h"
 
+static TAutoConsoleVariable<bool> CVarDebugDrawTags(TEXT("su.DebugPrintActions"), false, TEXT("Enable Debug String for ActionComponent."), ECVF_Cheat);
+
+
 USActionComponent::USActionComponent()
 {
 	PrimaryComponentTick.bCanEverTick = true;
@@ -35,9 +38,12 @@ void USActionComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAct
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	FString DebugMsg = GetNameSafe(GetOwner()) + " : " + ActiveGameplayTags.ToStringSimple();
+	if (CVarDebugDrawTags.GetValueOnGameThread())
+	{
+		FString DebugMsg = GetNameSafe(GetOwner()) + " : " + ActiveGameplayTags.ToStringSimple();
+		GEngine->AddOnScreenDebugMessage(-1, 0.0, FColor::White, DebugMsg);
+	}
 
-	GEngine->AddOnScreenDebugMessage(-1, 0.0, FColor::White, DebugMsg);
 }
 
 void USActionComponent::AddAction(AActor* Instigator, TSubclassOf<USAction> ActionClass)
@@ -94,6 +100,9 @@ bool USActionComponent::StopActionByName(AActor* Instigator, FName ActionName)
 		{
 			if (Action->IsRunning()) 
 			{
+				if (!GetOwner()->HasAuthority())
+					ServerStopAction(Instigator, ActionName);
+
 				Action->StopAction(Instigator);
 				return true;
 			}
@@ -105,5 +114,10 @@ bool USActionComponent::StopActionByName(AActor* Instigator, FName ActionName)
 void USActionComponent::ServerStartAction_Implementation(AActor* Instigator, FName ActionName)
 {
 	StartActionByName(Instigator, ActionName);
+}
+
+void USActionComponent::ServerStopAction_Implementation(AActor* Instigator, FName ActionName)
+{
+	StopActionByName(Instigator, ActionName);
 }
 

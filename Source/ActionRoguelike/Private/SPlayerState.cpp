@@ -2,6 +2,7 @@
 
 
 #include "SPlayerState.h"
+#include "Net/UnrealNetwork.h"
 
 void ASPlayerState::AddCoins(int32 CoinDelta)
 {
@@ -11,7 +12,9 @@ void ASPlayerState::AddCoins(int32 CoinDelta)
 
 	NumCoins = FMath::Clamp(NumCoins += CoinDelta, 0, TNumericLimits<int32>::Max());
 
-	OnCoinsChanged.Broadcast(NumCoins, CoinDelta);
+	ClientCoinsChanged(NumCoins, CoinDelta);
+
+	SetReplicates(true);
 }
 
 bool ASPlayerState::RemoveCoins(int32 CoinDelta)
@@ -28,4 +31,14 @@ bool ASPlayerState::RemoveCoins(int32 CoinDelta)
 int32 ASPlayerState::GetNumCoins() const
 {
 	return NumCoins;
+}
+
+void ASPlayerState::ClientCoinsChanged_Implementation(float NewCoins, float Delta)
+{
+	OnCoinsChanged.Broadcast(NewCoins, Delta);
+}
+
+void ASPlayerState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	DOREPLIFETIME(ASPlayerState, NumCoins);
 }

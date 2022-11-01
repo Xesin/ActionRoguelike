@@ -4,6 +4,7 @@
 #include "Components/SphereComponent.h"
 #include "SAttributesComponent.h"
 #include "SPlayerState.h"
+#include "Net/UnrealNetwork.h"
 
 // Sets default values
 ASPowerUp::ASPowerUp()
@@ -15,7 +16,7 @@ ASPowerUp::ASPowerUp()
 
 	RespawnTime = 10;
 	CoinCost = 0;
-
+	bIsVisible = true;
 	SetReplicates(true);
 }
 
@@ -28,6 +29,10 @@ void ASPowerUp::ApplyEffect(APawn* InstigatorPawn, USAttributesComponent* AttCom
 {
 }
 
+void ASPowerUp::NetMulticast_ExecuteUsageVFX_Implementation(APawn* InstigatorPawn)
+{
+}
+
 void ASPowerUp::ShowPowerup()
 {
 	SetPowerUpState(true);
@@ -36,8 +41,8 @@ void ASPowerUp::ShowPowerup()
 void ASPowerUp::SetPowerUpState(bool bNewIsActive)
 {
 	SetActorEnableCollision(bNewIsActive);
-
 	RootComponent->SetVisibility(bNewIsActive, true);
+	bIsVisible = bNewIsActive;
 }
 
 void ASPowerUp::Interact_Implementation(APawn* InstigatorPawn)
@@ -53,9 +58,27 @@ void ASPowerUp::Interact_Implementation(APawn* InstigatorPawn)
 
 		ApplyEffect(InstigatorPawn, AttrComponent);
 
+		NetMulticast_ExecuteUsageVFX(InstigatorPawn);
+
 		SetPowerUpState(false);
 
 		GetWorldTimerManager().SetTimer(TimerHandle_Respawn, this, &ASPowerUp::ShowPowerup, RespawnTime);
 	}
 }
 
+void ASPowerUp::OnRep_IsVisible()
+{
+	if (bIsVisible)
+	{
+		SetPowerUpState(true);
+	}
+	else
+	{
+		SetPowerUpState(false);
+	}
+}
+
+void ASPowerUp::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	DOREPLIFETIME(ASPowerUp, bIsVisible);
+}

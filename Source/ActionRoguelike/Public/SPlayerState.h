@@ -26,7 +26,10 @@ public:
 	UPROPERTY(BlueprintAssignable, Category = "Economy")
 	FOnCoinsChanged OnCoinsChanged;
 
+	UFUNCTION(Client, Unreliable)
+	void ClientCoinsChanged(float NewCoins, float Delta);
+
 protected:
-	UPROPERTY(BlueprintReadOnly, Category = "Economy")
+	UPROPERTY(BlueprintReadOnly, Replicated, Category = "Economy")
 	int32 NumCoins;
 };
