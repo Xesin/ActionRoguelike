@@ -9,7 +9,7 @@
 
 class USActionComponent;
 
-UCLASS(Blueprintable)
+UCLASS(BlueprintType, Blueprintable, config=Game)
 class ACTIONROGUELIKE_API USAction : public UObject
 {
 	GENERATED_BODY()
@@ -27,6 +27,14 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Action")
 	bool IsRunning() const;
 
+	UFUNCTION()
+	void OnRep_IsRunning();
+
+	bool IsSupportedForNetworking() const override
+	{
+		return true;
+	}
+
 	UWorld* GetWorld() const override;
 
 protected:
@@ -41,6 +49,7 @@ public:
 	bool bAutoStart;
 
 protected:
+	UPROPERTY(ReplicatedUsing = OnRep_IsRunning)
 	bool bIsRunning;
 
 	UPROPERTY(EditDefaultsOnly,Category = "Tags")

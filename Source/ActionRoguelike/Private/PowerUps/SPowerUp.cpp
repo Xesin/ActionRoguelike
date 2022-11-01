@@ -80,5 +80,6 @@ void ASPowerUp::OnRep_IsVisible()
 
 void ASPowerUp::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 	DOREPLIFETIME(ASPowerUp, bIsVisible);
 }

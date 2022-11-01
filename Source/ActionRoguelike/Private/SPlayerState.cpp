@@ -40,5 +40,6 @@ void ASPlayerState::ClientCoinsChanged_Implementation(float NewCoins, float Delt
 
 void ASPlayerState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 	DOREPLIFETIME(ASPlayerState, NumCoins);
 }

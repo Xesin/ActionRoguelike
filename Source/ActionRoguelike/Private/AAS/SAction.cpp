@@ -3,10 +3,13 @@
 
 #include "AAS/SAction.h"
 #include "AAS/SActionComponent.h"
+#include "../ActionRoguelike.h"
+#include "Net/UnrealNetwork.h"
 
 void USAction::StartAction_Implementation(AActor* Instigator)
 {
-	UE_LOG(LogTemp, Log, TEXT("Running; &s"), *GetNameSafe(this));
+	// UE_LOG(LogTemp, Log, TEXT("Running; &s"), *GetNameSafe(this));
+	LogOnScreen(this, FString::Printf(TEXT("Started: %s"), *ActionName.ToString()), FColor::Green);
 
 	bIsRunning = true;
 
@@ -17,9 +20,11 @@ void USAction::StartAction_Implementation(AActor* Instigator)
 
 void USAction::StopAction_Implementation(AActor* Instigator)
 {
-	UE_LOG(LogTemp, Log, TEXT("Stopped; &s"), *GetNameSafe(this));
+	//UE_LOG(LogTemp, Log, TEXT("Stopped; &s"), *GetNameSafe(this));
 
-	ensureAlways(bIsRunning);
+	LogOnScreen(this, FString::Printf(TEXT("Started: %s"), *ActionName.ToString()), FColor::White);
+
+	//ensureAlways(bIsRunning);
 
 	bIsRunning = false;
 
@@ -44,6 +49,18 @@ bool USAction::IsRunning() const
 	return bIsRunning;
 }
 
+void USAction::OnRep_IsRunning()
+{
+	if (bIsRunning)
+	{
+		StartAction(nullptr);
+	}
+	else
+	{
+		StopAction(nullptr);
+	}
+}
+
 UWorld* USAction::GetWorld() const
 {
 	UObject* Outer = GetOuter();
@@ -57,4 +74,10 @@ UWorld* USAction::GetWorld() const
 USActionComponent* USAction::GetOwningComponent() const
 {
 	return Cast<USActionComponent>(GetOuter());
+}
+
+void USAction::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+	DOREPLIFETIME(USAction, bIsRunning);
 }

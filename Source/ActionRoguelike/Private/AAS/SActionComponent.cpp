@@ -3,9 +3,9 @@
 
 #include "AAS/SActionComponent.h"
 #include "AAS/SAction.h"
-
-static TAutoConsoleVariable<bool> CVarDebugDrawTags(TEXT("su.DebugPrintActions"), false, TEXT("Enable Debug String for ActionComponent."), ECVF_Cheat);
-
+#include "../ActionRoguelike.h"
+#include "Net/UnrealNetwork.h"
+#include "Engine/ActorChannel.h"
 
 USActionComponent::USActionComponent()
 {
@@ -28,9 +28,12 @@ void USActionComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	for (TSubclassOf<USAction> Action : DefaultActions)
+	if (GetOwner()->HasAuthority())
 	{
-		AddAction(GetOwner(), Action);
+		for (TSubclassOf<USAction> Action : DefaultActions)
+		{
+			AddAction(GetOwner(), Action);
+		}
 	}
 }
 
@@ -38,12 +41,24 @@ void USActionComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAct
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	if (CVarDebugDrawTags.GetValueOnGameThread())
+	/*if (CVarDebugDrawTags.GetValueOnGameThread())
 	{
 		FString DebugMsg = GetNameSafe(GetOwner()) + " : " + ActiveGameplayTags.ToStringSimple();
 		GEngine->AddOnScreenDebugMessage(-1, 0.0, FColor::White, DebugMsg);
-	}
+	}*/
 
+	for (USAction* Action : Actions)
+	{
+		FColor TextColor = Action->IsRunning() ? FColor::Blue : FColor::White;
+
+		FString ActionMsg = FString::Printf(TEXT("[%s] Action: [%s] IsRunning: %s : Outer: %s"), 
+			*GetNameSafe(GetOwner()),
+			*Action->ActionName.ToString(),
+			Action->IsRunning() ? TEXT("true") : TEXT("false"),
+			*GetNameSafe(Action->GetOuter()));
+
+		LogOnScreen(this, ActionMsg, TextColor, 0.0f);
+	}
 }
 
 void USActionComponent::AddAction(AActor* Instigator, TSubclassOf<USAction> ActionClass)
@@ -121,3 +136,23 @@ void USActionComponent::ServerStopAction_Implementation(AActor* Instigator, FNam
 	StopActionByName(Instigator, ActionName);
 }
 
+bool USActionComponent::ReplicateSubobjects(class UActorChannel* Channel,class FOutBunch* Bunch, FReplicationFlags* RepFlags)
+{
+	bool WroteSomething = Super::ReplicateSubobjects(Channel, Bunch, RepFlags);
+
+	for (USAction* Action : Actions)
+	{
+		if (Action)
+		{
+			WroteSomething |= Channel->ReplicateSubobject(Action, *Bunch, *RepFlags);
+		}
+	}
+
+	return WroteSomething;
+}
+
+void USActionComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+	DOREPLIFETIME(USActionComponent, Actions);
+}

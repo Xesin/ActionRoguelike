@@ -138,6 +138,7 @@ float USAttributesComponent::GetMaxHealth() const
 
 void USAttributesComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 	DOREPLIFETIME(USAttributesComponent, Health);
 	DOREPLIFETIME(USAttributesComponent, HealthMax);
 	DOREPLIFETIME(USAttributesComponent, Rage);
