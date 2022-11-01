@@ -9,6 +9,18 @@
 
 class USActionComponent;
 
+USTRUCT()
+struct FActionRepData
+{
+	GENERATED_BODY()
+
+public:
+	UPROPERTY()
+	bool bIsRunning;
+	UPROPERTY()
+	AActor* Instigator;
+};
+
 UCLASS(BlueprintType, Blueprintable, config=Game)
 class ACTIONROGUELIKE_API USAction : public UObject
 {
@@ -28,7 +40,7 @@ public:
 	bool IsRunning() const;
 
 	UFUNCTION()
-	void OnRep_IsRunning();
+	void OnRep_RepData();
 
 	bool IsSupportedForNetworking() const override
 	{
@@ -49,8 +61,8 @@ public:
 	bool bAutoStart;
 
 protected:
-	UPROPERTY(ReplicatedUsing = OnRep_IsRunning)
-	bool bIsRunning;
+	UPROPERTY(ReplicatedUsing = OnRep_RepData)
+	FActionRepData RepData;
 
 	UPROPERTY(EditDefaultsOnly,Category = "Tags")
 	FGameplayTagContainer GrantTags;

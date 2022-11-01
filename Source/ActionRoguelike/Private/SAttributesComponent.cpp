@@ -40,6 +40,7 @@ bool USAttributesComponent::IsActorAlive(AActor* FromActor)
 
 bool USAttributesComponent::ApplyHealthChange(AActor* InstigatorActor, float Delta)
 {
+
 	if (Delta < 0.0f)
 	{
 		if (!GetOwner()->CanBeDamaged()) return false;
@@ -49,24 +50,30 @@ bool USAttributesComponent::ApplyHealthChange(AActor* InstigatorActor, float Del
 	}
 
 	float OldHealth = Health;
+	float NewHealth = FMath::Clamp(Health += Delta, 0, HealthMax);
 
-	Health = FMath::Clamp(Health += Delta, 0, HealthMax);
+	float ActualDelta = NewHealth - OldHealth;
 
-	float ActualDelta = Health - OldHealth;
-	OnHealthChanged.Broadcast(InstigatorActor, this, Health, Delta);
-	
-	NetMulticastHealthChanged(InstigatorActor, Health, Delta);
-
-	if (ActualDelta < 0.f && !IsAlive())
+	if (GetOwner()->HasAuthority())
 	{
-		ASGameModeBase* GM = GetWorld()->GetAuthGameMode<ASGameModeBase>();
-		if (GM)
-		{
-			GM->OnActorKilled(GetOwner(), InstigatorActor);
-		}
-	}
+		Health = NewHealth;
 
-	return true;
+		if (ActualDelta != 0.f)
+		{
+			NetMulticastHealthChanged(InstigatorActor, Health, Delta);
+		}
+
+		if (ActualDelta < 0.f && !IsAlive())
+		{
+			ASGameModeBase* GM = GetWorld()->GetAuthGameMode<ASGameModeBase>();
+			if (GM)
+			{
+				GM->OnActorKilled(GetOwner(), InstigatorActor);
+			}
+		}
+	}	
+
+	return ActualDelta != 0.f;
 }
 
 bool USAttributesComponent::ApplyRageChange(AActor* InstigatorActor, float Delta)

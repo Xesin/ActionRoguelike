@@ -111,6 +111,7 @@ void ASCharacter::OnHealthChanged(AActor* InstigatorActor, USAttributesComponent
 			if (PC)
 			{
 				DisableInput(PC);
+				SetLifeSpan(5.0f);
 			}
 		}
 		else

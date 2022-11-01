@@ -7,6 +7,8 @@
 #include "EnvironmentQuery/EnvQueryTypes.h"
 #include "SGameModeBase.generated.h"
 
+class USSaveGame;
+
 UCLASS()
 class ACTIONROGUELIKE_API ASGameModeBase : public AGameModeBase
 {
@@ -19,6 +21,11 @@ public:
 	virtual void StartPlay() override;
 
 	virtual void OnActorKilled(AActor* VictimActor, AActor* Killer);
+	
+	UFUNCTION(BlueprintCallable, Category = "SaveGame")
+	void WriteSaveGame();
+
+	void LoadSaveGame();
 
 protected:
 	UFUNCTION()
@@ -45,6 +52,11 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = "AI")
 	UCurveFloat* DifficultyCurve;
+
+	UPROPERTY()
+	USSaveGame* CurrentSaveGame;
+
+	FString SlotName;
 
 	FTimerHandle TimerHandle_BotsSpawner;
 };

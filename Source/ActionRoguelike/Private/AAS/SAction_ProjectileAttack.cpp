@@ -31,12 +31,15 @@ void USAction_ProjectileAttack::StartAction_Implementation(AActor* Instigator)
 		UGameplayStatics::SpawnEmitterAttached(CastingEffect, Character->GetMesh(), SocketName, FVector::ZeroVector, FRotator::ZeroRotator, EAttachLocation::SnapToTarget);
 	}
 
-	FTimerHandle TimerHandle_AttackDelay;
+	if (Character->HasAuthority())
+	{
+		FTimerHandle TimerHandle_AttackDelay;
 
-	FTimerDelegate Delgate;
-	Delgate.BindUFunction(this, "AttackDelay_Elapsed", Character);
+		FTimerDelegate Delgate;
+		Delgate.BindUFunction(this, "AttackDelay_Elapsed", Character);
 
-	GetWorld()->GetTimerManager().SetTimer(TimerHandle_AttackDelay, Delgate, AttackAnimDelay, false);
+		GetWorld()->GetTimerManager().SetTimer(TimerHandle_AttackDelay, Delgate, AttackAnimDelay, false);
+	}	
 }
 
 void USAction_ProjectileAttack::AttackDelay_Elapsed(ACharacter* InstigatorCharacter)

@@ -38,13 +38,13 @@ void ASMagicProjectile::OnActorOverlap(UPrimitiveComponent* OverlappedComponent,
 			return;
 		}
 
-		USGameplayFunctionLibrary::ApplyDirectionalDamage(GetInstigator(), OtherActor, Damage, SweepResult);
-
-		if (ActionComp && EffecToApply)
+		if (USGameplayFunctionLibrary::ApplyDirectionalDamage(GetInstigator(), OtherActor, Damage, SweepResult))
 		{
-			ActionComp->AddAction(GetInstigator(), EffecToApply);
+			if (HasAuthority() && ActionComp && EffecToApply)
+			{
+				ActionComp->AddAction(GetInstigator(), EffecToApply);
+			}
 		}
-
 		Super::OnActorOverlap(OverlappedComponent, OtherActor, OtherComp, OtherBodyIndex, bFromSweep, SweepResult);
 	}
 }

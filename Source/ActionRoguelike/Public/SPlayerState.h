@@ -29,6 +29,8 @@ public:
 	UFUNCTION(Client, Unreliable)
 	void ClientCoinsChanged(float NewCoins, float Delta);
 
+
+
 protected:
 	UPROPERTY(BlueprintReadOnly, Replicated, Category = "Economy")
 	int32 NumCoins;

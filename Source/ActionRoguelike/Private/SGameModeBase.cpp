@@ -9,7 +9,8 @@
 #include "SAttributesComponent.h"
 #include "SCharacter.h"
 #include "SPlayerState.h"
-
+#include "Kismet/GameplayStatics.h"
+#include "Storage/SSaveGame.h"
 
 static TAutoConsoleVariable<bool> CVarSpawnBots(TEXT("su.SpawnBots"), true, TEXT("Enable spawning of bots via timer."), ECVF_Cheat);
 
@@ -18,6 +19,7 @@ ASGameModeBase::ASGameModeBase()
 	SpawnInterval = 2.f;
 
 	PlayerStateClass = ASPlayerState::StaticClass();
+	SlotName = "Slot01";
 }
 
 void ASGameModeBase::StartPlay()
@@ -51,6 +53,31 @@ void ASGameModeBase::OnActorKilled(AActor* VictimActor, AActor* Killer)
 		if (!ensureMsgf(PS, TEXT("PlayerState is required to be ASPlayerState"))) return;
 		
 		PS->AddCoins(15);
+	}
+}
+
+void ASGameModeBase::WriteSaveGame()
+{
+	UGameplayStatics::SaveGameToSlot(CurrentSaveGame, SlotName, 0);
+}
+
+void ASGameModeBase::LoadSaveGame()
+{
+	if (UGameplayStatics::DoesSaveGameExist(SlotName, 0))
+	{
+		CurrentSaveGame = Cast<USSaveGame>(UGameplayStatics::LoadGameFromSlot(SlotName, 0));
+		if (CurrentSaveGame == nullptr)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Failed to load SaveGame Data."))
+		}
+		else
+		{
+			UE_LOG(LogTemp, Log, TEXT("Success load SaveGame Data."))
+		}
+	}
+	else
+	{
+		CurrentSaveGame = Cast<USSaveGame>(UGameplayStatics::CreateSaveGameObject(USSaveGame::StaticClass()));
 	}
 }
 
